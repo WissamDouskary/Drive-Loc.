@@ -1,3 +1,15 @@
+<?php
+
+require_once '../classes/user.php';
+
+if($_SERVER['REQUEST_METHOD'] == 'POST'){
+    $email = $_POST['email'];
+    $password = $_POST['password'];
+
+    $user = new User();
+    $user->logIn($email, $password);
+}
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -42,24 +54,22 @@
                 <p class="mt-2 text-gray-600">Please login to your account</p>
             </div>
             
-            <form class="mt-8 space-y-6 bg-white p-8 rounded-lg shadow">
+            <form class="mt-8 space-y-6 bg-white p-8 rounded-lg shadow" method="POST">
                 <div>
                     <label class="block text-sm font-medium text-gray-700">Email</label>
-                    <input type="email" required class="mt-1 w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-yellow-500 focus:border-transparent">
+                    <input type="email" name="email" required class="mt-1 w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-yellow-500 focus:border-transparent">
                 </div>
 
                 <div>
                     <label class="block text-sm font-medium text-gray-700">Password</label>
-                    <input type="password" required class="mt-1 w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-yellow-500 focus:border-transparent">
+                    <input type="password" name="password" required class="mt-1 w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-yellow-500 focus:border-transparent">
                 </div>
 
-                <div class="flex items-center justify-between">
-                    <div class="flex items-center">
-                        <input type="checkbox" class="h-4 w-4 text-yellow-500 focus:ring-yellow-500 border-gray-300 rounded">
-                        <label class="ml-2 text-sm text-gray-600">Remember me</label>
-                    </div>
-                    <a href="#" class="text-sm text-yellow-600 hover:text-yellow-500">Forgot password?</a>
-                </div>
+                <?php
+                if (isset($_GET['error'])) {
+                    echo '<p style="color: red;">' . htmlspecialchars($_GET['error']) . '</p>';
+                }
+                ?>
 
                 <button type="submit" class="w-full bg-primary py-2 px-4 border border-transparent rounded-md text-sm font-medium btn-hover focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-yellow-500">
                     Sign In
@@ -67,7 +77,7 @@
 
                 <div class="text-center text-sm text-gray-600">
                     Not registered yet? 
-                    <a href="/register" class="font-medium text-yellow-600 hover:text-yellow-500">Create an account</a>
+                    <a href="../autentification/signup.php" class="font-medium text-yellow-600 hover:text-yellow-500">Create an account</a>
                 </div>
             </form>
         </div>

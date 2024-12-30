@@ -1,3 +1,9 @@
+<?php 
+session_start();
+
+if(isset($_SESSION['role_id'])){
+
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -43,10 +49,16 @@
                     </li>
                 </ul>
                 </div>
+                <?php if(isset($_SESSION['user_id'])){ ?>
                 <div class="flex items-center space-x-6">
-                    <a href="../Drive-Loc/autentification/login.php" class="hover:text-gray-800">Login</a>
+                    <a href="#"><img width="50px" src="../Drive-Loc/imgs/profilephoto.png" alt=""></a>
+                </div>
+                <?php }else{ ?>
+                <div class="flex items-center space-x-6">
+                    <a href="../Drive-Loc/autentification/login.php">Login</a>
                     <a href="../Drive-Loc/autentification/signup.php" class="bg-white px-6 py-2 rounded-lg hover:bg-gray-100">Register</a>
                 </div>
+                <?php } ?>
             </div>
         </div>
     </nav>
@@ -133,3 +145,9 @@
     </footer>
 </body>
 </html>
+<?php 
+}else{
+    header('location: ../Drive-Loc/autentification/signup.php');
+    exit();
+}
+?>
