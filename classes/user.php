@@ -81,6 +81,10 @@ class User {
         }
     }
 
+    function seDisconnect(){
+        
+    }
+
 }
 
 ?>
