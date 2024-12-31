@@ -1,5 +1,8 @@
 <?php
 session_start();
+require_once '../classes/vehicule_class.php';
+
+$vehicule = new Vehicule();
 
 if($_SESSION['role_id'] == 2){
 ?>
@@ -75,25 +78,38 @@ if($_SESSION['role_id'] == 2){
         <!-- Car Details Section -->
         <div class="bg-white rounded-lg shadow-lg overflow-hidden">
             <div class="md:flex">
+                <?php
+                if(isset($_GET['vehiculeId'])){
+                $selectedvehiculeId = $_GET['vehiculeId'];
+                $_SESSION['vehiculeId'] = $_GET['vehiculeId'];
+                $rows = $vehicule->showSpiceficAllVehicule($_SESSION['vehiculeId']);
+                foreach($rows as $row){
+                ?>
+                    
                 <!-- Car Image -->
                 <div class="md:w-1/2">
-                    <img src="../imgs/pexels-mikebirdy-17539752.jpg" alt="Car Image" class="w-full h-96 object-cover">
+                    <img src="<?php echo $row['vehicule_image'] ?>" alt="Car Image" class="w-full h-96 object-cover">
                 </div>
                 <!-- Car Information -->
+                
                 <div class="md:w-1/2 p-6">
                     <div class="flex justify-between items-start mb-4">
                         <div>
-                            <h1 class="text-3xl font-bold">Toyota Camry 2024</h1>
-                            <p class="text-gray-600 text-xl mt-2">Executive Sedan</p>
+                            <h1 class="text-3xl font-bold"><?php echo $row['marque'] ?></h1>
+                            <p class="text-gray-600 text-xl mt-2"><?php echo $row['modele'] ?></p>
                         </div>
-                        <span class="bg-primary px-4 py-2 rounded-full text-lg font-semibold">$65/day</span>
+                        <span class="bg-primary px-4 py-2 rounded-full text-lg font-semibold">$<?php echo $row['prix'] ?>/day</span>
                     </div>
 
                     <!-- Availability Status -->
                     <div class="mb-6">
                         <span class="inline-flex items-center px-4 py-2 rounded-full text-sm font-semibold bg-green-100 text-green-800">
                             <span class="w-2 h-2 bg-green-500 rounded-full mr-2"></span>
-                            Available
+                            <?php echo $row['status'] ?>
+                        </span>
+                        <span class="inline-flex items-center px-4 py-2 rounded-full text-sm font-semibold bg-red-100 text-red-800">
+                            <span class="w-2 h-2 bg-red-500 rounded-full mr-2"></span>
+                            <?php echo $row['nom'] ?>
                         </span>
                     </div>
 
@@ -134,6 +150,10 @@ if($_SESSION['role_id'] == 2){
                         <button class="btn-primary w-full py-3 rounded-lg text-lg font-semibold">Reserve Now</button>
                     </form>
                 </div>
+                <?php
+                } 
+                }
+                 ?>
             </div>
         </div>
 

@@ -1,8 +1,10 @@
 <?php
 session_start();
 require_once '../classes/vehicule_class.php';
+require_once '../classes/Categorie.php';
 
 $vehiculs = new Vehicule();
+$categorie = new Categorie();
 
 if($_SESSION['role_id'] == 2){
 
@@ -84,25 +86,23 @@ if($_SESSION['role_id'] == 2){
         <div class="flex justify-between items-center mb-8">
             <h1 class="text-3xl font-bold">Available Vehicles</h1>
             <div class="flex gap-4">
-                <select class="border rounded-lg p-2">
-                    <option>All Categories</option>
-                    <option>City Cars</option>
-                    <option>SUVs</option>
-                    <option>Luxury</option>
-                </select>
-                <select class="border rounded-lg p-2">
-                    <option>Price: Low to High</option>
-                    <option>Price: High to Low</option>
-                    <option>Newest First</option>
-                </select>
+            <select id="categoryFilter" class="border rounded-lg p-2">
+                <option value="all">All Categories</option>
+                <?php 
+                $arr = $categorie->showCategorie();
+                foreach($arr as $row) {
+                     echo "<option value='". $row['Categorie_id'] . "'>". $row['nom'] ."</option>";
+                }
+            ?>
+            </select>
             </div>
         </div>
-
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
             
              <?php
              $rows = $vehiculs->showAllVehicule();
              foreach($rows as $row){
+                $_SESSION['vehicule_id'] = $row['vehicule_id'];
              ?>
             <div class="bg-white rounded-lg shadow-lg overflow-hidden card-animation">
                 <img src="<?php echo $row['vehicule_image'] ?>" alt="Toyota Corolla" class="w-full h-48 object-cover">
@@ -120,16 +120,18 @@ if($_SESSION['role_id'] == 2){
                             <span class="w-2 h-2 bg-green-500 rounded-full mr-2"></span>
                             <?php echo $row['status'] ?>
                         </span>
+                        <span class="inline-flex items-center px-4 py-2 rounded-full text-sm font-semibold bg-red-100 text-red-800">
+                            <span class="w-2 h-2 bg-red-500 rounded-full mr-2"></span>
+                            <?php echo $row['nom'] ?>
+                        </span>
                     </div>
                     </div>
-                    
-                    <a href="../pages/reservation_page.php"><button class="btn-primary w-full py-2 rounded-lg">Reserve Now</button></a>
+                    <a href="../pages/reservation_page.php?vehiculeId=<?php echo $_SESSION['vehicule_id']?>"><button class="btn-primary w-full py-2 rounded-lg">Reserve Now</button></a>
                 </div>
             </div>
             <?php
             }
             ?>
-            <!-- More vehicle cards... -->
         </div>
 
         <!-- Pagination -->
