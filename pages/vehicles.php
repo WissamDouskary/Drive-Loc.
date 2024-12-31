@@ -1,5 +1,8 @@
 <?php
 session_start();
+require_once '../classes/vehicule_class.php';
+
+$vehiculs = new Vehicule();
 
 if($_SESSION['role_id'] == 2){
 
@@ -96,31 +99,36 @@ if($_SESSION['role_id'] == 2){
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <!-- Vehicle Card 1 -->
+            
+             <?php
+             $rows = $vehiculs->showAllVehicule();
+             foreach($rows as $row){
+             ?>
             <div class="bg-white rounded-lg shadow-lg overflow-hidden card-animation">
-                <img src="../imgs/pexels-mikebirdy-17539752.jpg" alt="Toyota Corolla" class="w-full h-48 object-cover">
+                <img src="<?php echo $row['vehicule_image'] ?>" alt="Toyota Corolla" class="w-full h-48 object-cover">
                 <div class="p-6">
                     <div class="flex justify-between items-start mb-4">
                         <div>
-                            <h3 class="font-bold text-xl">Toyota Corolla</h3>
-                            <p class="text-gray-600">Compact Sedan</p>
+                            <h3 class="font-bold text-xl"><?php echo $row['marque'] ?></h3>
+                            <p class="text-gray-600"><?php echo $row['modele'] ?></p>
                         </div>
-                        <span class="bg-primary px-3 py-1 rounded-full text-sm">$45/day</span>
+                        <span class="bg-primary px-3 py-1 rounded-full text-sm">$<?php echo $row['prix'] ?>/day</span>
                     </div>
-                    <div class="grid grid-cols-2 gap-4 mb-4">
-                        <div class="text-sm">
-                            <p>✓ 5 Seats</p>
-                            <p>✓ Automatic</p>
-                        </div>
-                        <div class="text-sm">
-                            <p>✓ AC</p>
-                            <p>✓ Bluetooth</p>
-                        </div>
+                    <div class="flex gap-6">
+                        <div class="mb-6">
+                        <span class="inline-flex items-center px-4 py-2 rounded-full text-sm font-semibold bg-green-100 text-green-800">
+                            <span class="w-2 h-2 bg-green-500 rounded-full mr-2"></span>
+                            <?php echo $row['status'] ?>
+                        </span>
                     </div>
+                    </div>
+                    
                     <a href="../pages/reservation_page.php"><button class="btn-primary w-full py-2 rounded-lg">Reserve Now</button></a>
                 </div>
             </div>
-
+            <?php
+            }
+            ?>
             <!-- More vehicle cards... -->
         </div>
 

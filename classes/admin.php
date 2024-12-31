@@ -23,7 +23,7 @@ class admin extends User{
     }
 
     function gererClients(){
-
+        
     }
 
     function approuverReservation(){

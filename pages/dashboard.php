@@ -1,12 +1,28 @@
 <?php 
 require_once '../classes/Categorie.php';
+require_once '../classes/client.php';
+require_once '../classes/vehicule_class.php';
+
 session_start();
 
+$client = new client();
+$vehicule = new Vehicule();
 $categorie = new Categorie();
-if($_SERVER['REQUEST_METHOD'] == 'POST'){
+
+if(isset($_POST['Category_submit'])){
     $categorie_name = $_POST['cat_name'];
     $categorie_desc = $_POST['cat_desc'];
     $categorie->ajouterCategorie($categorie_name, $categorie_desc);
+}
+
+if(isset($_POST['Vehicle_submit'])){
+    $modele = $_POST['modele'];
+    $marque = $_POST['marque'];
+    $Category = $_POST['Category'];
+    $price = $_POST['price'];
+    $Vehicle_Image = $_FILES['Vehicle_Image'];
+
+    $vehicule->AjouterVehicule($modele, $marque, $price, $Vehicle_Image, $Category);
 }
 
 if($_SESSION['role_id'] == 1){
@@ -159,20 +175,25 @@ if($_SESSION['role_id'] == 1){
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-gray-200">
+                        <?php
+                        $rows = $vehicule->showAllVehicule();
+                        foreach($rows as $row){
+                        ?>
                         <tr>
-                            <td class="px-6 py-4">#001</td>
-                            <td class="px-6 py-4">Corolla</td>
-                            <td class="px-6 py-4">Toyota</td>
-                            <td class="px-6 py-4">Sedan</td>
-                            <td class="px-6 py-4">$45</td>
+                            <td class="px-6 py-4"><?php echo $row['vehicule_id'] ?></td>
+                            <td class="px-6 py-4"><?php echo $row['modele'] ?></td>
+                            <td class="px-6 py-4"><?php echo $row['marque'] ?></td>
+                            <td class="px-6 py-4"><?php echo $row['nom'] ?></td>
+                            <td class="px-6 py-4"><?php echo $row['prix'] ?></td>
                             <td class="px-6 py-4">
-                                <span class="px-2 py-1 bg-green-100 text-green-800 rounded-full text-sm">Available</span>
+                                <span class="px-2 py-1 bg-green-100 text-green-800 rounded-full text-sm"><?php echo $row['status'] ?></span>
                             </td>
                             <td class="px-6 py-4">
                                 <button class="text-blue-600 hover:text-blue-800 mr-2">Edit</button>
                                 <button class="text-red-600 hover:text-red-800">Delete</button>
                             </td>
                         </tr>
+                        <?php } ?>
                     </tbody>
                 </table>
             </div>
@@ -202,23 +223,27 @@ if($_SESSION['role_id'] == 1){
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">ID</th>
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Name</th>
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Email</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Phone</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Total Rentals</th>
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Actions</th>
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-gray-200">
+                        <?php
+                        $rows = $client->ShowAllClients();
+                        foreach($rows as $row){
+                        if($row['role_id'] == 2){
+                        ?>
                         <tr>
-                            <td class="px-6 py-4">#001</td>
-                            <td class="px-6 py-4">John Doe</td>
-                            <td class="px-6 py-4">john@example.com</td>
-                            <td class="px-6 py-4">+1234567890</td>
-                            <td class="px-6 py-4">5</td>
+                            <td class="px-6 py-4"><?php echo $row['user_id'] ?></td>
+                            <td class="px-6 py-4"><?php echo $row['nom'] . " " . $row['prenom'] ?></td>
+                            <td class="px-6 py-4"><?php echo $row['email'] ?></td>
                             <td class="px-6 py-4">
-                                <button class="text-blue-600 hover:text-blue-800 mr-2">View Details</button>
                                 <button class="text-red-600 hover:text-red-800">Ban</button>
                             </td>
                         </tr>
+                        <?php 
+                        } 
+                        } 
+                        ?>
                     </tbody>
                 </table>
             </div>
@@ -269,7 +294,7 @@ if($_SESSION['role_id'] == 1){
                 <h3 class="text-xl font-bold">Add New Vehicle</h3>
                 <button onclick="closeModal('addVehicleModal')" class="text-gray-500 hover:text-gray-700">×</button>
             </div>
-            <form class="space-y-4">
+            <form class="space-y-4" method="post" enctype="multipart/form-data">
                 <div class="grid grid-cols-2 gap-4">
                     <div>
                         <label class="block text-sm font-medium mb-1">Vehicle modele</label>
@@ -283,27 +308,27 @@ if($_SESSION['role_id'] == 1){
 
                     <div>
                         <label class="block text-sm font-medium mb-1">Category</label>
-                        <select class="w-full border rounded-lg p-2">
+                        <select class="w-full border rounded-lg p-2" name="Category">
                             <?php 
                             $arr = $categorie->showCategorie();
                             foreach($arr as $row){
-                                echo "<option>". $row['nom'] ."</option>";
+                                echo "<option value='". $row['Categorie_id'] . "'>". $row['nom'] ."</option>";
                             }
                              ?>
                         </select>
                     </div>
                     <div>
                         <label class="block text-sm font-medium mb-1">Price per Day</label>
-                        <input type="number" class="w-full border rounded-lg p-2" >
+                        <input type="number" class="w-full border rounded-lg p-2" name="price">
                     </div>
                 </div>
                 <div>
                     <label class="block text-sm font-medium mb-1">Vehicle Image</label>
-                    <input type="file" class="w-full border rounded-lg p-2">
+                    <input type="file" class="w-full border rounded-lg p-2" name="Vehicle_Image">
                 </div>
                 <div class="flex justify-end space-x-4">
                     <button type="button" onclick="closeModal('addVehicleModal')" class="px-4 py-2 border rounded-lg">Cancel</button>
-                    <button type="submit" class="px-4 py-2 bg-primary rounded-lg">Add Vehicle</button>
+                    <button type="submit" name="Vehicle_submit" class="px-4 py-2 bg-primary rounded-lg">Add Vehicle</button>
                 </div>
             </form>
         </div>
@@ -327,7 +352,7 @@ if($_SESSION['role_id'] == 1){
                 </div>
                 <div class="flex justify-end space-x-4">
                     <button type="button" onclick="closeModal('addCategoryModal')" class="px-4 py-2 border rounded-lg">Cancel</button>
-                    <button type="submit" class="px-4 py-2 bg-primary rounded-lg">Add Category</button>
+                    <button type="submit" name="Category_submit" class="px-4 py-2 bg-primary rounded-lg">Add Category</button>
                 </div>
             </form>
         </div>
