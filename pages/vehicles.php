@@ -1,7 +1,7 @@
-<?php 
+<?php
 session_start();
 
-if(isset($_SESSION['role_id'])){
+if($_SESSION['role_id'] == 2){
 
 ?>
 <!DOCTYPE html>
@@ -44,9 +44,29 @@ if(isset($_SESSION['role_id'])){
                 </ul>
                 </div>
                 <?php if(isset($_SESSION['user_id'])){ ?>
-                <div class="flex items-center space-x-6">
-                    <a href="#"><img width="50px" src="../imgs/profilephoto.png" alt=""></a>
-                </div>
+                    <div class="flex items-center md:order-2 space-x-3 md:space-x-0 rtl:space-x-reverse">
+      <button type="button" class="flex text-sm rounded-full md:me-0" id="user-menu-button" aria-expanded="false" data-dropdown-toggle="user-dropdown" data-dropdown-placement="bottom">
+        <span class="sr-only">Open user menu</span>
+        <img width="40px" src="../imgs/profilephoto.png" alt="user photo">
+      </button>
+      <!-- Dropdown menu -->
+      <div class="z-50 hidden absolute top-10 right-40 z-50 my-4 text-base list-none bg-white divide-y divide-gray-100 rounded-lg shadow dark:bg-gray-700 dark:divide-gray-600" id="user-dropdown">
+        <div class="px-4 py-3">
+          <span class="block text-sm text-gray-900 dark:text-white"><?php echo $_SESSION['nom'] . " " . $_SESSION['prenom'] ?></span>
+          <span class="block text-sm  text-gray-500 truncate dark:text-gray-400"><?php echo $_SESSION['email'] ?></span>
+        </div>
+          <li>
+            <a href="../classes/user.php?signout" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white ">Sign out</a>
+          </li>
+        </ul>
+      </div>
+      <button data-collapse-toggle="navbar-user" type="button" class="inline-flex items-center p-2 w-10 h-10 justify-center text-sm text-gray-500 rounded-lg md:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600" aria-controls="navbar-user" aria-expanded="false">
+        <span class="sr-only">Open main menu</span>
+        <svg class="w-5 h-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 17 14">
+            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 1h15M1 7h15M1 13h15"/>
+        </svg>
+    </button>
+  </div>
                 <?php }else{ ?>
                 <div class="flex items-center space-x-6">
                     <a href="../autentification/login.php">Login</a>
@@ -78,7 +98,7 @@ if(isset($_SESSION['role_id'])){
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
             <!-- Vehicle Card 1 -->
             <div class="bg-white rounded-lg shadow-lg overflow-hidden card-animation">
-                <img src="/api/placeholder/400/300" alt="Toyota Corolla" class="w-full h-48 object-cover">
+                <img src="../imgs/pexels-mikebirdy-17539752.jpg" alt="Toyota Corolla" class="w-full h-48 object-cover">
                 <div class="p-6">
                     <div class="flex justify-between items-start mb-4">
                         <div>
@@ -97,57 +117,7 @@ if(isset($_SESSION['role_id'])){
                             <p>✓ Bluetooth</p>
                         </div>
                     </div>
-                    <button class="btn-primary w-full py-2 rounded-lg">Reserve Now</button>
-                </div>
-            </div>
-
-            <!-- Vehicle Card 2 -->
-            <div class="bg-white rounded-lg shadow-lg overflow-hidden card-animation">
-                <img src="/api/placeholder/400/300" alt="Honda CR-V" class="w-full h-48 object-cover">
-                <div class="p-6">
-                    <div class="flex justify-between items-start mb-4">
-                        <div>
-                            <h3 class="font-bold text-xl">Honda CR-V</h3>
-                            <p class="text-gray-600">SUV</p>
-                        </div>
-                        <span class="bg-primary px-3 py-1 rounded-full text-sm">$75/day</span>
-                    </div>
-                    <div class="grid grid-cols-2 gap-4 mb-4">
-                        <div class="text-sm">
-                            <p>✓ 5 Seats</p>
-                            <p>✓ Automatic</p>
-                        </div>
-                        <div class="text-sm">
-                            <p>✓ AC</p>
-                            <p>✓ Navigation</p>
-                        </div>
-                    </div>
-                    <button class="btn-primary w-full py-2 rounded-lg">Reserve Now</button>
-                </div>
-            </div>
-
-            <!-- Vehicle Card 3 -->
-            <div class="bg-white rounded-lg shadow-lg overflow-hidden card-animation">
-                <img src="/api/placeholder/400/300" alt="Mercedes E-Class" class="w-full h-48 object-cover">
-                <div class="p-6">
-                    <div class="flex justify-between items-start mb-4">
-                        <div>
-                            <h3 class="font-bold text-xl">Mercedes E-Class</h3>
-                            <p class="text-gray-600">Luxury Sedan</p>
-                        </div>
-                        <span class="bg-primary px-3 py-1 rounded-full text-sm">$120/day</span>
-                    </div>
-                    <div class="grid grid-cols-2 gap-4 mb-4">
-                        <div class="text-sm">
-                            <p>✓ 5 Seats</p>
-                            <p>✓ Automatic</p>
-                        </div>
-                        <div class="text-sm">
-                            <p>✓ Leather</p>
-                            <p>✓ Premium Audio</p>
-                        </div>
-                    </div>
-                    <button class="btn-primary w-full py-2 rounded-lg">Reserve Now</button>
+                    <a href="../pages/reservation_page.php"><button class="btn-primary w-full py-2 rounded-lg">Reserve Now</button></a>
                 </div>
             </div>
 
@@ -169,6 +139,7 @@ if(isset($_SESSION['role_id'])){
             <p>&copy; 2024 Drive & Loc. All rights reserved.</p>
         </div>
     </footer>
+    <script src="../scripts/script.js"></script>
 </body>
 </html>
 <?php 

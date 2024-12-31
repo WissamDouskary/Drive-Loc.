@@ -28,7 +28,7 @@ CREATE TABLE vehicule (
     modele VARCHAR(255) NOT NULL,
     marque VARCHAR(255) NOT NULL,
     prix FLOAT NOT NULL,
-    disponible BOOLEAN DEFAULT TRUE,
+    status ENUM('active', 'Maintenance', 'Reserved'),
     vehicule_image VARCHAR(225),
     Categorie_id INT NOT NULL,
     FOREIGN KEY (Categorie_id) REFERENCES Categorie(Categorie_id) ON DELETE CASCADE

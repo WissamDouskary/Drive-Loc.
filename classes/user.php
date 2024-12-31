@@ -47,33 +47,49 @@ class User {
     public function logIn($email, $password){
         session_start();
 
-        if($email == "admin@gmail.com" && $password == "admin"){
-            header('Location: ../pages/dashboard.php');
-            exit();
-        }
-
         $sqlcheck = "SELECT * FROM user WHERE email = :email";
         $stmt = $this->pdo->prepare($sqlcheck);
         $stmt->bindParam(':email', $email);
         $stmt->execute();
-
+        
         if($stmt->rowCount() > 0){
             $user = $stmt->fetch(PDO::FETCH_ASSOC);
-            if(password_verify($password, $user['password'])){
-                $_SESSION['nom'] = $user['nom'];
-                $_SESSION['prenom'] = $user['prenom'];
-                $_SESSION['email'] = $user['email'];
-                $_SESSION['role_id'] = $user['role_id'];
-                $_SESSION['user_id'] = $user['user_id'];
+            if($email == "admin@gmail.com"){
+                $hashedpassword = password_hash('admin', PASSWORD_BCRYPT);
 
-                header('Location: ../index.php');
-                exit();
+                if(password_verify($password, $hashedpassword)){
+                    $_SESSION['nom'] = $user['nom'];
+                    $_SESSION['prenom'] = $user['prenom'];
+                    $_SESSION['email'] = $user['email'];
+                    $_SESSION['role_id'] = $user['role_id'];
+                    $_SESSION['user_id'] = $user['user_id'];
 
+                    header('Location: ../pages/dashboard.php');
+                    exit();
+                }else{
+                    $error_message = "Incorrect email or password.";
+                    header("Location: ../autentification/login.php?error=" . $error_message);
+                    exit();
+                }
             }else{
-                $error_message = "Incorrect username or password.";
-                header("Location: ../autentification/login.php?error=" . $error_message);
-                exit();
+                
+                if(password_verify($password, $user['password'])){
+                    $_SESSION['nom'] = $user['nom'];
+                    $_SESSION['prenom'] = $user['prenom'];
+                    $_SESSION['email'] = $user['email'];
+                    $_SESSION['role_id'] = $user['role_id'];
+                    $_SESSION['user_id'] = $user['user_id'];
+    
+                    header('Location: ../index.php');
+                    exit();
+    
+                }else{
+                    $error_message = "Incorrect email or password.";
+                    header("Location: ../autentification/login.php?error=" . $error_message);
+                    exit();
+                }
             }
+            
         }else{
             $error_message = "user not found!";
             header("Location: ../autentification/login.php?error=" . $error_message);
@@ -82,9 +98,17 @@ class User {
     }
 
     function seDisconnect(){
-        
+        session_start();
+        session_destroy();
+        header('Location: ../autentification/login.php');
+        exit();
     }
 
+}
+
+if(isset($_GET['signout'])){
+    $user = new User();
+    $user->seDisconnect();
 }
 
 ?>

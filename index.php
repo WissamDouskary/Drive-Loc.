@@ -1,7 +1,8 @@
 <?php 
 session_start();
 
-if(isset($_SESSION['role_id'])){
+
+if($_SESSION['role_id'] == 2){
 
 ?>
 <!DOCTYPE html>
@@ -50,9 +51,30 @@ if(isset($_SESSION['role_id'])){
                 </ul>
                 </div>
                 <?php if(isset($_SESSION['user_id'])){ ?>
-                <div class="flex items-center space-x-6">
-                    <a href="#"><img width="50px" src="../Drive-Loc/imgs/profilephoto.png" alt=""></a>
-                </div>
+
+  <div class="flex items-center md:order-2 space-x-3 md:space-x-0 rtl:space-x-reverse">
+      <button type="button" class="flex text-sm rounded-full md:me-0" id="user-menu-button" aria-expanded="false" data-dropdown-toggle="user-dropdown" data-dropdown-placement="bottom">
+        <span class="sr-only">Open user menu</span>
+        <img width="40px" src="../Drive-Loc/imgs/profilephoto.png" alt="user photo">
+      </button>
+      <!-- Dropdown menu -->
+      <div class="z-50 hidden absolute top-10 right-40 z-50 my-4 text-base list-none bg-white divide-y divide-gray-100 rounded-lg shadow dark:bg-gray-700 dark:divide-gray-600" id="user-dropdown">
+        <div class="px-4 py-3">
+          <span class="block text-sm text-gray-900 dark:text-white"><?php echo $_SESSION['nom'] . " " . $_SESSION['prenom'] ?></span>
+          <span class="block text-sm  text-gray-500 truncate dark:text-gray-400"><?php echo $_SESSION['email'] ?></span>
+        </div>
+          <li>
+            <a href="../Drive-Loc/classes/user.php?signout" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white ">Sign out</a>
+          </li>
+        </ul>
+      </div>
+      <button data-collapse-toggle="navbar-user" type="button" class="inline-flex items-center p-2 w-10 h-10 justify-center text-sm text-gray-500 rounded-lg md:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600" aria-controls="navbar-user" aria-expanded="false">
+        <span class="sr-only">Open main menu</span>
+        <svg class="w-5 h-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 17 14">
+            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 1h15M1 7h15M1 13h15"/>
+        </svg>
+    </button>
+  </div>
                 <?php }else{ ?>
                 <div class="flex items-center space-x-6">
                     <a href="../Drive-Loc/autentification/login.php">Login</a>
@@ -143,6 +165,7 @@ if(isset($_SESSION['role_id'])){
             <p>&copy; 2024 Drive & Loc. All rights reserved.</p>
         </div>
     </footer>
+    <script src="../Drive-Loc/scripts/script.js"></script>
 </body>
 </html>
 <?php 

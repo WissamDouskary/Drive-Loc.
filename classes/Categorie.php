@@ -4,17 +4,45 @@ require_once '../classes/conn.php';
 class Categorie {
     protected $cat_nom;
     protected $cat_description;
+    private $pdo;
 
-    function ajouterCategorie(){
-
+    function __construct(){
+        $connection = new DBconnection();
+        $this->pdo = $connection->PDOconnect();
     }
+    // ajouter une categorie methode
+    function ajouterCategorie($cat_name, $cat_desc){
+        $this->cat_nom = $cat_name;
+        $this->cat_description = $cat_desc;
 
+        $sql = "INSERT INTO categorie(nom, description)
+                VALUES (:nom, :description)";
+        $stmt = $this->pdo->prepare($sql);
+
+        $stmt->bindParam(':nom', $cat_name);
+        $stmt->bindParam(':description', $cat_desc);
+
+        if($stmt->execute()){
+            header('Location: ../pages/dashboard.php');
+            exit();
+        }
+    }
+    // modifier categorie methode
     function modifierCategorie(){
 
     }
-
+    // supprimer categorie methode
     function supprCategorie(){
-        
+
+    }
+
+    function showCategorie(){
+        $sql = "SELECT * FROM categorie";
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute();
+        if($stmt->rowCount() > 0){
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        }
     }
 }
 
