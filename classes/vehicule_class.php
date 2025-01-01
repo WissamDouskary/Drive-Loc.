@@ -69,6 +69,18 @@ class Vehicule {
         }
     }
 
+    function showTop3Vehicule(){
+        $sql = "SELECT v.*, c.nom
+                FROM vehicule v
+                LEFT JOIN Categorie c
+                ON v.Categorie_id = c.Categorie_id
+                LIMIT 3";
+        $stmt = $this->pdo->prepare($sql);
+        if($stmt->execute()){
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        }
+    }
+
     function showSpiceficAllVehicule($selectedvehiculeID){
         $sql = "SELECT v.*, c.nom
                 FROM vehicule v
@@ -87,7 +99,22 @@ class Vehicule {
             LEFT JOIN Categorie c ON v.Categorie_id = c.Categorie_id
             WHERE v.Categorie_id = :category_id";
         $stmt = $this->pdo->prepare($sql);
-        $stmt->execute(['category_id' => $categoryId]);
+        $stmt->bindParam(':category_id', $categoryId);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public function searchForVehicules($searchData){
+        $sql = "SELECT * FROM vehicule
+                WHERE marque LIKE :searchdata";
+        $stmt = $this->pdo->prepare($sql);
+
+        $likedata = "%". $searchData ."%" ;
+
+        $stmt->bindParam(":searchdata", $likedata);
+
+        $stmt->execute();
+
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 }

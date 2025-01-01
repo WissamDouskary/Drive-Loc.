@@ -86,6 +86,7 @@ if($_SESSION['role_id'] == 2){
         <div class="flex justify-between items-center mb-8">
             <h1 class="text-3xl font-bold">Available Vehicles</h1>
             <div class="flex gap-4">
+            <input id="searchInput" type="text" class="border rounded-lg p-2 outline-none" placeholder="Search For Cars..">
             <select id="categoryFilter" class="border rounded-lg p-2">
                 <option value="all">All Categories</option>
                 <?php 
@@ -97,6 +98,7 @@ if($_SESSION['role_id'] == 2){
             </select>
             </div>
         </div>
+        <p id="errorcontain"></p>
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
             
              <?php
