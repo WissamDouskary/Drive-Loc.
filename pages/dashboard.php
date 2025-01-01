@@ -2,12 +2,13 @@
 require_once '../classes/Categorie.php';
 require_once '../classes/client.php';
 require_once '../classes/vehicule_class.php';
-
-session_start();
+require_once '../classes/reservation.php';
 
 $client = new client();
 $vehicule = new Vehicule();
 $categorie = new Categorie();
+$reservation = new Reservation();
+
 
 if(isset($_POST['Category_submit'])){
     $categorie_name = $_POST['cat_name'];
@@ -23,6 +24,17 @@ if(isset($_POST['Vehicle_submit'])){
     $Vehicle_Image = $_FILES['Vehicle_Image'];
 
     $vehicule->AjouterVehicule($modele, $marque, $price, $Vehicle_Image, $Category);
+}
+
+
+if(isset($_POST['approve_reservation'])) {
+    $reservation_id = $_POST['reservation_id'];
+    $reservation->updateReservationStatus($reservation_id, 'accepte');
+}
+
+if(isset($_POST['refuse_reservation'])) {
+    $reservation_id = $_POST['reservation_id'];
+    $reservation->updateReservationStatus($reservation_id, 'refuse');
 }
 
 if($_SESSION['role_id'] == 1){
@@ -282,10 +294,74 @@ if($_SESSION['role_id'] == 1){
                     </tbody>
                 </table>
             </div>
-                </div>
+                            </div>
+        <!-- Reservations Table -->
+        <div class="bg-white rounded-lg shadow-md mt-6">
+            <div class="p-6 border-b border-gray-200 flex justify-between items-center">
+                <h2 class="text-xl font-bold">Reservations Management</h2>
+            </div>
+            <div class="overflow-x-auto">
+                <table class="w-full">
+                    <thead class="bg-gray-50">
+                        <tr>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">ID</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Client</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Vehicle</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Start Date</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">End Date</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Status</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-gray-200">
+                        <?php
+                        $reservations = $reservation->getAllReservations();
+                        foreach($reservations as $res) {
+                            $status_color = '';
+                            switch($res['status']) {
+                                case 'waiting':
+                                    $status_color = 'bg-yellow-100 text-yellow-800';
+                                    break;
+                                case 'accepte':
+                                    $status_color = 'bg-green-100 text-green-800';
+                                    break;
+                                case 'refuse':
+                                    $status_color = 'bg-red-100 text-red-800';
+                                    break;
+                            }
+                        ?>
+                        <tr>
+                            <td class="px-6 py-4"><?php echo $res['reservation_id'] ?></td>
+                            <td class="px-6 py-4"><?php echo $res['client_name'] ?></td>
+                            <td class="px-6 py-4"><?php echo $res['vehicle_name'] ?></td>
+                            <td class="px-6 py-4"><?php echo $res['date_debut'] ?></td>
+                            <td class="px-6 py-4"><?php echo $res['date_fin'] ?></td>
+                            <td class="px-6 py-4">
+                                <span class="px-2 py-1 rounded-full text-sm <?php echo $status_color ?>">
+                                    <?php echo $res['status'] ?>
+                                </span>
+                            </td>
+                            <td class="px-6 py-4">
+                                <?php if($res['status'] == 'waiting') { ?>
+                                    <form method="POST" class="inline-block">
+                                        <input type="hidden" name="reservation_id" value="<?php echo $res['reservation_id'] ?>">
+                                        <button type="submit" name="approve_reservation" class="text-green-600 hover:text-green-800 mr-2">
+                                            Approve
+                                        </button>
+                                        <button type="submit" name="refuse_reservation" class="text-red-600 hover:text-red-800">
+                                            Refuse
+                                        </button>
+                                    </form>
+                                <?php } ?>
+                            </td>
+                        </tr>
+                        <?php } ?>
+                    </tbody>
+                </table>
             </div>
         </div>
-    </div>
+        
+        </div>
 
     <!-- Add Vehicle Modal -->
     <div id="addVehicleModal" class="modal">

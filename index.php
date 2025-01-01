@@ -101,7 +101,7 @@ if($_SESSION['role_id'] == 2){
                 <h2 class="text-3xl font-bold text-center mb-12">Available Vehicles</h2>
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
                     <div class="rounded-lg shadow-lg overflow-hidden card-hover">
-                        <img src="/api/placeholder/400/300" alt="City Car" class="w-full h-48 object-cover">
+                        <img src="../Drive-Loc/uploads/784f7a74-a71b-425b-aeea-7e8ba80eb0de.webp" alt="City Car" class="w-full h-48 object-cover">
                         <div class="p-6">
                             <h3 class="font-bold text-xl mb-2">Comfort City Car</h3>
                             <p class="text-gray-600 mb-4">Perfect for city driving</p>
@@ -113,7 +113,7 @@ if($_SESSION['role_id'] == 2){
                     </div>
 
                     <div class="rounded-lg shadow-lg overflow-hidden card-hover">
-                        <img src="/api/placeholder/400/300" alt="SUV" class="w-full h-48 object-cover">
+                        <img src="../Drive-Loc/uploads/439807.jpeg" alt="SUV" class="w-full h-48 object-cover">
                         <div class="p-6">
                             <h3 class="font-bold text-xl mb-2">Family SUV</h3>
                             <p class="text-gray-600 mb-4">Ideal for travel</p>
@@ -125,7 +125,7 @@ if($_SESSION['role_id'] == 2){
                     </div>
 
                     <div class="rounded-lg shadow-lg overflow-hidden card-hover">
-                        <img src="/api/placeholder/400/300" alt="Premium" class="w-full h-48 object-cover">
+                        <img src="../Drive-Loc/uploads/2024-honda-cr-v-hybrid-front-right-angle.avif" alt="Premium" class="w-full h-48 object-cover">
                         <div class="p-6">
                             <h3 class="font-bold text-xl mb-2">Premium Sedan</h3>
                             <p class="text-gray-600 mb-4">Luxury within reach</p>

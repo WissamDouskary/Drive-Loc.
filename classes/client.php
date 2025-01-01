@@ -21,7 +21,7 @@ class client extends User{
     }
     
     function filtrerVehicules(){
-
+        
     }
 
     function ReserverVehicule($date_debut, $date_fin, $client_id, $vehicule_id){
@@ -34,7 +34,8 @@ class client extends User{
         $stmt->bindParam(":vehicule_id", $vehicule_id);
 
         if($stmt->execute()){
-            header('Location: ../pages/reservation_page.php?vehiculeId='. $vehicule_id .'');
+            $_SESSION['success'] = "Reservation completed, wait for admin approval!";
+            header('Location: ../pages/reservation_page.php?vehiculeId=' . $vehicule_id);
             exit();
         }
     }
@@ -63,14 +64,10 @@ if (isset($_POST['reservation_submit']) && isset($_GET['vehicule_Id']) && isset(
     $client = new client();
 
     if ($date_debut >= date("Y-m-d") && $date_fin > $date_debut) {
-        if ($client->ReserverVehicule($date_debut, $date_fin, $clientId, $vehiculeId)) {
-            $_SESSION['success'] = "Reservation completed, wait for admin approval!";
-            header('Location: ../pages/reservation_page.php?vehiculeId='. $vehiculeId .'');
-            exit();
-        }
+        $client->ReserverVehicule($date_debut, $date_fin, $clientId, $vehiculeId);
     } else {
         $_SESSION['date_invalide'] = "Please enter a valid date!";
-        header('Location: ../pages/reservation_page.php?vehiculeId='. $vehiculeId .'');
+        header('Location: ../pages/reservation_page.php?vehiculeId=' . $vehiculeId);
         exit();
     }
 }

@@ -6,15 +6,6 @@ require_once '../classes/Categorie.php';
 $vehiculs = new Vehicule();
 $categorie = new Categorie();
 
-if (isset($_SESSION['success'])) {
-    echo "<script>alert('" . $_SESSION['success'] . "')</script>";
-    unset($_SESSION['success']);
-}
-
-if (isset($_SESSION['date_invalide'])) {
-    echo "<script>alert('" . $_SESSION['date_invalide'] . "')</script>";
-    unset($_SESSION['date_invalide']);
-}
 
 if($_SESSION['role_id'] == 2){
 

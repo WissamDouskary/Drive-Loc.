@@ -4,6 +4,19 @@ require_once '../classes/vehicule_class.php';
 
 $vehicule = new Vehicule();
 
+if (isset($_SESSION['success'])) {
+    $message = $_SESSION['success'];
+    $alertType = 'success';
+    unset($_SESSION['success']); 
+} elseif (isset($_SESSION['date_invalide'])) {
+    $message = $_SESSION['date_invalide'];
+    $alertType = 'error'; 
+    unset($_SESSION['date_invalide']); 
+} else {
+    $message = '';
+    $alertType = '';
+}
+
 if($_SESSION['role_id'] == 2){
 ?>
 <!DOCTYPE html>
@@ -13,6 +26,7 @@ if($_SESSION['role_id'] == 2){
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Drive & Loc - Car Reservation</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/alpinejs@2.8.2/dist/alpine.js"></script>
     <style>
         :root {
             --primary: #FFD700;
@@ -27,6 +41,15 @@ if($_SESSION['role_id'] == 2){
     </style>
 </head>
 <body class="bg-gray-50">
+        
+        <?php if ($message != ''){ ?>
+        <div class="fixed top-0 left-1/2 transform -translate-x-1/2 z-50 w-80 mt-4 px-4 py-3 rounded-lg text-center 
+            <?php echo $alertType == 'success' ? 'bg-green-500 text-white' : 'bg-red-500 text-white'; ?>" 
+            x-data="{ show: true }" x-show="show" x-transition:enter="transition ease-out duration-300" x-transition:leave="transition ease-in duration-200" x-init="setTimeout(() => show = false, 5000)">
+            <span><?php echo $message; ?></span>
+            <button @click="show = false" class="absolute top-1 right-1 text-xl font-bold">&times;</button>
+        </div>
+    <?php } ?>
     <!-- Navigation Bar -->
     <nav class="bg-primary shadow-lg">
         <div class="max-w-7xl mx-auto px-4">
