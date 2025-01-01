@@ -79,10 +79,10 @@ if($_SESSION['role_id'] == 2){
         <div class="bg-white rounded-lg shadow-lg overflow-hidden">
             <div class="md:flex">
                 <?php
-                if(isset($_GET['vehiculeId'])){
-                $selectedvehiculeId = $_GET['vehiculeId'];
-                $_SESSION['vehiculeId'] = $_GET['vehiculeId'];
-                $rows = $vehicule->showSpiceficAllVehicule($_SESSION['vehiculeId']);
+                $_SESSION['vehicule_id'] = $_GET['vehiculeId'];
+                if(isset($_SESSION['vehicule_id']) || isset($_GET['vehiculeId'])){
+                
+                $rows = $vehicule->showSpiceficAllVehicule($_SESSION['vehicule_id']);
                 foreach($rows as $row){
                 ?>
                     
@@ -134,20 +134,24 @@ if($_SESSION['role_id'] == 2){
                             </ul>
                         </div>
                     </div>
-
+                    <?php 
+                    if(isset($_SESSION['date_invalide'])){
+                        echo $_SESSION['date_invalide'];
+                    }
+                    ?>
                     <!-- Reservation Form -->
-                    <form class="space-y-4">
+                    <form class="space-y-4" method="post" action="../classes/client.php?vehicule_Id=<?php echo $_SESSION['vehicule_id'] ?>&clientId=<?php echo $_SESSION['user_id'] ?>">
                         <div class="grid grid-cols-2 gap-4">
                             <div>
                                 <label class="block text-sm font-medium mb-1">Pick-up Date</label>
-                                <input type="date" class="w-full border rounded-lg p-2">
+                                <input type="date" class="w-full border rounded-lg p-2" name="date_debut">
                             </div>
                             <div>
                                 <label class="block text-sm font-medium mb-1">Return Date</label>
-                                <input type="date" class="w-full border rounded-lg p-2">
+                                <input type="date" class="w-full border rounded-lg p-2" name="date_fin">
                             </div>
                         </div>
-                        <button class="btn-primary w-full py-3 rounded-lg text-lg font-semibold">Reserve Now</button>
+                        <input name="reservation_submit" type="submit" class="cursor-pointer btn-primary w-full py-3 rounded-lg text-lg font-semibold mt-6" value="Reserve Now">
                     </form>
                 </div>
                 <?php

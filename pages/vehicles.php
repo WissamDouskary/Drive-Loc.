@@ -6,7 +6,18 @@ require_once '../classes/Categorie.php';
 $vehiculs = new Vehicule();
 $categorie = new Categorie();
 
+if (isset($_SESSION['success'])) {
+    echo "<script>alert('" . $_SESSION['success'] . "')</script>";
+    unset($_SESSION['success']);
+}
+
+if (isset($_SESSION['date_invalide'])) {
+    echo "<script>alert('" . $_SESSION['date_invalide'] . "')</script>";
+    unset($_SESSION['date_invalide']);
+}
+
 if($_SESSION['role_id'] == 2){
+
 
 ?>
 <!DOCTYPE html>
@@ -98,7 +109,6 @@ if($_SESSION['role_id'] == 2){
             </select>
             </div>
         </div>
-        <p id="errorcontain"></p>
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
             
              <?php
