@@ -31,6 +31,23 @@ class reservation {
         $stmt = $this->pdo->prepare($sql);
         return $stmt->execute([$status, $reservation_id]);
     }
+
+    public function showClientReservations(){
+       $user_id = $_SESSION['user_id'];
+
+       $sql = "SELECT r.*, v.modele, v.marque, v.prix
+              FROM reservation r 
+              JOIN vehicule v ON r.vehicule_id = v.vehicule_id 
+              WHERE r.user_id = ? ";
+       $stmt = $this->pdo->prepare($sql);
+
+       $stmt->bindParam(1, $user_id);
+
+       $stmt->execute();
+
+       return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
 }
 
 ?>

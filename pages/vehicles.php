@@ -63,6 +63,9 @@ if($_SESSION['role_id'] == 2){
           <span class="block text-sm  text-gray-500 truncate dark:text-gray-400"><?php echo $_SESSION['email'] ?></span>
         </div>
           <li>
+            <a href="../pages/reservation_hestorie.php" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white ">My Reservations</a>
+          </li>
+          <li>
             <a href="../classes/user.php?signout" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white ">Sign out</a>
           </li>
         </ul>
@@ -100,6 +103,7 @@ if($_SESSION['role_id'] == 2){
             </select>
             </div>
         </div>
+        <p id="errorcontain"></p>
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
             
              <?php

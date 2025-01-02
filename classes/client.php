@@ -39,6 +39,17 @@ class client extends User{
             exit();
         }
     }
+    function cancelReservation($reservation_id){
+        $sql = "UPDATE reservation
+                SET status = 'refuse'
+                WHERE reservation_id = :reservation_id";
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->bindParam(':reservation_id', $reservation_id);
+        if($stmt->execute()){
+            header('Location: ../pages/reservation_hestorie.php');
+            exit();
+        }
+    }
 
     function gererAvis(){
 
@@ -70,6 +81,14 @@ if (isset($_POST['reservation_submit']) && isset($_GET['vehicule_Id']) && isset(
         header('Location: ../pages/reservation_page.php?vehiculeId=' . $vehiculeId);
         exit();
     }
+}
+
+if(isset($_POST['action']) && isset($_POST['reservation_id'])){
+    $reservation_id = $_POST['reservation_id'];
+
+    $client = new client();
+
+    $client->cancelReservation($reservation_id);
 }
 
 ?>

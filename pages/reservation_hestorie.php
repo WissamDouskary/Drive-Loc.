@@ -2,7 +2,9 @@
 session_start();
 
 if($_SESSION['role_id'] == 2){
-    require_once('../classes/conn.php');
+    require_once('../classes/reservation.php');
+
+    $reservation = new reservation();
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -36,31 +38,54 @@ if($_SESSION['role_id'] == 2){
     </style>
 </head>
 <body>
-    <!-- Navigation Bar (Same as original) -->
     <nav class="bg-primary shadow-lg">
         <div class="max-w-7xl mx-auto px-4">
             <div class="flex justify-between items-center py-4">
                 <div class="flex items-center space-x-4">
-                    <span class="text-2xl font-bold w-8 mr-24"><img src="../Drive-Loc/imgs/360_F_323469705_belmsoxt9kj49rxSmOBXpO0gHtfVJvjl-removebg-preview.png" alt="LOGO"></span>
+                    <a href="../index.php" class="text-2xl font-bold w-8 mr-24"><img src="../imgs/360_F_323469705_belmsoxt9kj49rxSmOBXpO0gHtfVJvjl-removebg-preview.png" alt="LOGO"></a>
                 </div>
                 <div class="hidden w-full md:block md:w-auto">
-                    <ul class="flex flex-col p-4 md:p-0 mt-4 font-medium rounded-lg md:flex-row md:space-x-8 md:mt-0">
-                        <li>
-                            <a href="../Drive-Loc/index.php" class="block py-2 pl-3 pr-4 text-white hover:text-blue-200 md:p-0">Home</a>
-                        </li>
-                        <li>
-                            <a href="../Drive-Loc/pages/vehicles.php" class="block py-2 pl-3 pr-4 text-white hover:text-blue-200 md:p-0">Cars</a>
-                        </li>
-                        <li>
-                            <a href="../Drive-Loc/pages/reservations.php" class="block py-2 pl-3 pr-4 text-black-200 border-b-2 border-black-200 md:p-0">My Reservations</a>
-                        </li>
-                    </ul>
+                <ul class="flex flex-col p-4 md:p-0 mt-4 font-medium rounded-lg md:flex-row md:space-x-8 md:mt-0">
+                    <li>
+                        <a href="../index.php" class="block py-2 pl-3 pr-4 text-white hover:text-black-200 md:p-0">Home</a>
+                    </li>
+                    <li>
+                        <a href="../pages/vehicles.php" class="block py-2 pl-3 pr-4 text-white hover:text-black-200 md:p-0">Cars</a>
+                    </li>
+                </ul>
                 </div>
                 <?php if(isset($_SESSION['user_id'])){ ?>
-                    <!-- User Menu (Same as original) -->
                     <div class="flex items-center md:order-2 space-x-3 md:space-x-0 rtl:space-x-reverse">
-                        <!-- ... (rest of the user menu code) ... -->
-                    </div>
+      <button type="button" class="flex text-sm rounded-full md:me-0" id="user-menu-button" aria-expanded="false" data-dropdown-toggle="user-dropdown" data-dropdown-placement="bottom">
+        <span class="sr-only">Open user menu</span>
+        <img width="40px" src="../imgs/profilephoto.png" alt="user photo">
+      </button>
+      <!-- Dropdown menu -->
+      <div class="z-50 hidden absolute top-10 right-40 z-50 my-4 text-base list-none bg-white divide-y divide-gray-100 rounded-lg shadow dark:bg-gray-700 dark:divide-gray-600" id="user-dropdown">
+        <div class="px-4 py-3">
+          <span class="block text-sm text-gray-900 dark:text-white"><?php echo $_SESSION['nom'] . " " . $_SESSION['prenom'] ?></span>
+          <span class="block text-sm  text-gray-500 truncate dark:text-gray-400"><?php echo $_SESSION['email'] ?></span>
+        </div>
+          <li>
+            <a href="../pages/reservation_hestorie.php" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white ">My Reservations</a>
+          </li>
+          <li>
+            <a href="../classes/user.php?signout" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white ">Sign out</a>
+          </li>
+        </ul>
+      </div>
+      <button data-collapse-toggle="navbar-user" type="button" class="inline-flex items-center p-2 w-10 h-10 justify-center text-sm text-gray-500 rounded-lg md:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600" aria-controls="navbar-user" aria-expanded="false">
+        <span class="sr-only">Open main menu</span>
+        <svg class="w-5 h-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 17 14">
+            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 1h15M1 7h15M1 13h15"/>
+        </svg>
+    </button>
+  </div>
+                <?php }else{ ?>
+                <div class="flex items-center space-x-6">
+                    <a href="../autentification/login.php">Login</a>
+                    <a href="../autentification/signup.php" class="bg-white px-6 py-2 rounded-lg hover:bg-gray-100">Register</a>
+                </div>
                 <?php } ?>
             </div>
         </div>
@@ -85,40 +110,41 @@ if($_SESSION['role_id'] == 2){
                         </thead>
                         <tbody class="bg-white divide-y divide-gray-200">
                             <?php
-                            
-                            while($row = $stmt->fetch()) {
-                                $status_class = $row['status'] == 'active' ? 'text-green-600' : 'text-gray-500';
+                            $rows = $reservation->showClientReservations();
+                            foreach($rows as $row){
+                                $status_accepte = $row['status'] === 'accepte' ? 'text-green-600' : 'text-gray-500';
+                                $status_refuse = $row['status'] === 'refuse' ? 'text-red-600' : 'text-gray-500';
                             ?>
                                 <tr>
                                     <td class="px-6 py-4 whitespace-nowrap">
                                         <div class="text-sm font-medium text-gray-900">
-                                            <?php echo htmlspecialchars($row['brand'] . ' ' . $row['model']); ?>
+                                            <?php echo $row['marque'] . ' ' . $row['modele']; ?>
                                         </div>
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap">
                                         <div class="text-sm text-gray-900">
-                                            <?php echo date('M d, Y', strtotime($row['start_date'])); ?>
+                                            <?php echo date('M d, Y', strtotime($row['date_debut'])); ?>
                                         </div>
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap">
                                         <div class="text-sm text-gray-900">
-                                            <?php echo date('M d, Y', strtotime($row['end_date'])); ?>
+                                            <?php echo date('M d, Y', strtotime($row['date_fin'])); ?>
                                         </div>
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap">
                                         <div class="text-sm text-gray-900">
-                                            $<?php echo number_format($row['total_price'], 2); ?>
+                                            <?php echo number_format($row['prix'], 2); ?> $
                                         </div>
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap">
-                                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full <?php echo $status_class; ?>">
-                                            <?php echo ucfirst($row['status']); ?>
+                                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full <?php echo $row['status'] === 'accepte' ? $status_accepte : $status_refuse ; ?>">
+                                            <?php echo $row['status']; ?>
                                         </span>
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap">
-                                        <?php if($row['status'] == 'active') { ?>
-                                            <form action="../Drive-Loc/classes/reservation.php" method="POST">
-                                                <input type="hidden" name="reservation_id" value="<?php echo $row['id']; ?>">
+                                        <?php if($row['status'] == 'waiting') { ?>
+                                            <form action="../classes/client.php" method="POST">
+                                                <input type="hidden" name="reservation_id" value="<?php echo $row['reservation_id']; ?>">
                                                 <input type="hidden" name="action" value="cancel">
                                                 <button type="submit" class="btn-cancel px-4 py-2 rounded-lg text-sm">
                                                     Cancel
@@ -135,7 +161,7 @@ if($_SESSION['role_id'] == 2){
         </div>
     </main>
 
-    <footer class="bg-gray-800 text-white py-8">
+    <footer class="bg-gray-800 text-white py-8 mt-80">
         <div class="max-w-7xl mx-auto px-4 text-center">
             <p>&copy; 2024 Drive & Loc. All rights reserved.</p>
         </div>

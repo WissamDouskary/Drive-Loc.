@@ -1,7 +1,7 @@
 let isModalOpen = false;
 
 document.getElementById('user-menu-button').addEventListener('click', function () {
-    const dropdown = document.getElementById('user-dropdown');
+    let dropdown = document.getElementById('user-dropdown');
     
     if (isModalOpen) {
         dropdown.classList.add('hidden');
@@ -67,7 +67,7 @@ document.getElementById('user-menu-button').addEventListener('click', function (
     
         searchInput.addEventListener('input', function() {
         let searchValue = searchInput.value;
-    
+        console.log("Search value:", searchValue);
         let conn = new XMLHttpRequest();
         conn.open("GET", `../classes/search_vehicules.php?carModel=${searchValue}`, true);
         conn.send();
