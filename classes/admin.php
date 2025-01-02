@@ -10,29 +10,8 @@ class admin extends User{
         $this->pdo = $connection->PDOconnect();
     }
 
-    function gereVehicule(){
 
-    }
 
-    function gererCategories(){
-        
-    }
-
-    function gererReservation(){
-
-    }
-
-    function gererClients(){
-        
-    }
-
-    function approuverReservation(){
-
-    }
-
-    function refuseReservation(){
-
-    }
 }
 
 

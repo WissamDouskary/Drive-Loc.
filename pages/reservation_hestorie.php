@@ -38,7 +38,7 @@ if($_SESSION['role_id'] == 2){
     </style>
 </head>
 <body>
-    <nav class="bg-primary shadow-lg">
+<nav class="bg-primary shadow-lg">
         <div class="max-w-7xl mx-auto px-4">
             <div class="flex justify-between items-center py-4">
                 <div class="flex items-center space-x-4">
@@ -167,7 +167,21 @@ if($_SESSION['role_id'] == 2){
         </div>
     </footer>
 
-    <script src="../Drive-Loc/scripts/script.js"></script>
+    <script>
+        let isModalOpen = false;
+
+document.getElementById('user-menu-button').addEventListener('click', function () {
+    let dropdown = document.getElementById('user-dropdown');
+    
+    if (isModalOpen) {
+        dropdown.classList.add('hidden');
+        isModalOpen = false;
+    } else {
+        dropdown.classList.remove('hidden'); 
+        isModalOpen = true;
+    }
+});
+    </script>
 </body>
 </html>
 <?php 

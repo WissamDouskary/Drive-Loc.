@@ -117,6 +117,78 @@ class Vehicule {
 
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
+
+    public function removeVehicule($Vehicule_id){
+        $sql = "DELETE FROM vehicule 
+                WHERE vehicule_id = :vehicule_id";
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->bindParam(':vehicule_id', $Vehicule_id);
+        $stmt->execute();
+    }
+
+    public function EditVehiculeInfos($modele, $marque, $prix, $Vehicule_image, $Categorie_id, $Vehicule_id) {
+
+        if (empty($Vehicule_image['name'])) {
+            
+            $stmt = $this->pdo->prepare("SELECT vehicule_image FROM vehicule WHERE vehicule_id = :Vehicule_id");
+            $stmt->bindParam(':Vehicule_id', $Vehicule_id);
+            $stmt->execute();
+
+            $oldImage = $stmt->fetchColumn();
+
+            $Vehicule_image = $oldImage;
+
+        }else{
+            $uploadDir = '../uploads/';
+            $fileName = basename($Vehicule_image['name']);
+            $targetFilePath = $uploadDir . $fileName;
+        
+            if (!is_dir($uploadDir)) {
+                mkdir($uploadDir, 0777, true);
+            }
+        
+            if (move_uploaded_file($Vehicule_image['tmp_name'], $targetFilePath)) {
+                $Vehicule_image = $targetFilePath;
+            } else {
+                die("Error uploading the image file.");
+            }
+        }
+    
+        $sql = "UPDATE vehicule 
+            SET modele = :modele, marque = :marque, prix = :prix, vehicule_image = :vehicule_image, Categorie_id = :Categorie_id
+            WHERE vehicule_id = :Vehicule_id";
+
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->bindParam(':modele', $modele);
+        $stmt->bindParam(':marque', $marque);
+        $stmt->bindParam(':prix', $prix);
+        $stmt->bindParam(':vehicule_image', $Vehicule_image);
+        $stmt->bindParam(':Categorie_id', $Categorie_id);
+        $stmt->bindParam(':Vehicule_id', $Vehicule_id);
+
+        if($stmt->execute()){
+            echo "Modele: $modele, Marque: $marque, Prix: $prix, Vehicule_image: $Vehicule_image, Category ID: $Categorie_id, Vehicule ID: $Vehicule_id";
+        }else{
+            echo "lalalalal";
+        }
+        
+    }
+    
+}
+
+if (isset($_POST['editVehicle_submit']) && isset($_POST['vehiculeId'])) {
+
+    $vehiculeId = $_POST['vehiculeId']; 
+    $modele = $_POST['editmodele']; 
+    $marque = $_POST['editmarque']; 
+    $prix = $_POST['editprice'];
+    $Categorie_id = $_POST['editCategory'];
+    $vehicule_image = $_FILES['editVehicle_Image']; 
+
+    $vehicule = new Vehicule();
+
+    $vehicule->EditVehiculeInfos($modele, $marque, $prix, $vehicule_image, $Categorie_id, $vehiculeId);
+
 }
 
 ?>

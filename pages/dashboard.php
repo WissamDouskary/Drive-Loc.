@@ -26,16 +26,30 @@ if(isset($_POST['Vehicle_submit'])){
     $vehicule->AjouterVehicule($modele, $marque, $price, $Vehicle_Image, $Category);
 }
 
+if(isset($_POST['deletevehicule_id'])){
+    $vehicule_id = $_POST['deletevehicule_id'];
+    if($vehicule->removeVehicule($vehicule_id)){
+        header('Location: ../pages/dashboard.php');
+        exit();
+    }
+}
 
 if(isset($_POST['approve_reservation'])) {
     $reservation_id = $_POST['reservation_id'];
-    $reservation->updateReservationStatus($reservation_id, 'accepte');
+    if($reservation->updateReservationStatus($reservation_id, 'accepte')){
+        header('Location: ../pages/dashboard.php');
+        exit();
+    }
 }
 
 if(isset($_POST['refuse_reservation'])) {
     $reservation_id = $_POST['reservation_id'];
-    $reservation->updateReservationStatus($reservation_id, 'refuse');
+    if($reservation->updateReservationStatus($reservation_id, 'refuse')){
+        header('Location: ../pages/dashboard.php');
+        exit();
+    }
 }
+
 
 if($_SESSION['role_id'] == 1){
 ?>
@@ -110,7 +124,7 @@ if($_SESSION['role_id'] == 1){
                 <div class="flex items-center justify-between">
                     <div>
                         <p class="text-gray-500 text-sm">Active Vehicles</p>
-                        <h3 class="text-2xl font-bold mt-1">45</h3>
+                        <h3 class="text-2xl font-bold mt-1"><?php echo count($vehicule->showAllVehicule()); ?></h3>
                     </div>
                     <div class="bg-green-100 p-3 rounded-full">
                         <svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -124,8 +138,8 @@ if($_SESSION['role_id'] == 1){
             <div class="bg-white p-6 rounded-lg shadow-md stat-card">
                 <div class="flex items-center justify-between">
                     <div>
-                        <p class="text-gray-500 text-sm">Total Bookings</p>
-                        <h3 class="text-2xl font-bold mt-1">1,234</h3>
+                        <p class="text-gray-500 text-sm">Total Reservations</p>
+                        <h3 class="text-2xl font-bold mt-1"><?php echo count($reservation->getAllReservations()); ?></h3>
                     </div>
                     <div class="bg-yellow-100 p-3 rounded-full">
                         <svg class="w-6 h-6 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -139,8 +153,8 @@ if($_SESSION['role_id'] == 1){
             <div class="bg-white p-6 rounded-lg shadow-md stat-card">
                 <div class="flex items-center justify-between">
                     <div>
-                        <p class="text-gray-500 text-sm">Monthly Revenue</p>
-                        <h3 class="text-2xl font-bold mt-1">$12,345</h3>
+                        <p class="text-gray-500 text-sm">Clients</p>
+                        <h3 class="text-2xl font-bold mt-1"><?php echo $_SESSION['role_id'] == 2 ? count($client->ShowAllClients()) : count($client->ShowAllClients())-1 ?></h3>
                     </div>
                     <div class="bg-purple-100 p-3 rounded-full">
                         <svg class="w-6 h-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -190,6 +204,7 @@ if($_SESSION['role_id'] == 1){
                         <?php
                         $rows = $vehicule->showAllVehicule();
                         foreach($rows as $row){
+                            $_SESSION['vehicule_id'] = $row['vehicule_id'];
                         ?>
                         <tr>
                             <td class="px-6 py-4"><?php echo $row['vehicule_id'] ?></td>
@@ -201,8 +216,15 @@ if($_SESSION['role_id'] == 1){
                                 <span class="px-2 py-1 bg-green-100 text-green-800 rounded-full text-sm"><?php echo $row['status'] ?></span>
                             </td>
                             <td class="px-6 py-4">
-                                <button class="text-blue-600 hover:text-blue-800 mr-2">Edit</button>
+                                <form action="" method="post">
+                                <input class="editvehicule_id_input" type="hidden" name="editvehicule_id" value="<?php echo $row['vehicule_id'] ?>">
+                                <button class="editbtn text-blue-600 hover:text-blue-800 mr-2">Edit</button>
+                                </form>
+                                
+                                <form action="" method="post">
+                                <input type="hidden" name="deletevehicule_id" value="<?php echo $row['vehicule_id'] ?>">
                                 <button class="text-red-600 hover:text-red-800">Delete</button>
+                                </form>
                             </td>
                         </tr>
                         <?php } ?>
@@ -235,7 +257,6 @@ if($_SESSION['role_id'] == 1){
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">ID</th>
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Name</th>
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Email</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Actions</th>
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-gray-200">
@@ -248,9 +269,6 @@ if($_SESSION['role_id'] == 1){
                             <td class="px-6 py-4"><?php echo $row['user_id'] ?></td>
                             <td class="px-6 py-4"><?php echo $row['nom'] . " " . $row['prenom'] ?></td>
                             <td class="px-6 py-4"><?php echo $row['email'] ?></td>
-                            <td class="px-6 py-4">
-                                <button class="text-red-600 hover:text-red-800">Ban</button>
-                            </td>
                         </tr>
                         <?php 
                         } 
@@ -410,6 +428,63 @@ if($_SESSION['role_id'] == 1){
         </div>
     </div>
 
+        <!-- Edit Vehicle Modal -->
+        <div id="editVehicleModal" class="modal">
+        <div class="bg-white rounded-lg w-1/2 mx-auto my-auto p-6">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-xl font-bold">Add New Vehicle</h3>
+                <button onclick="closeModal('editVehicleModal')" class="text-gray-500 hover:text-gray-700">×</button>
+            </div>
+            <form class="space-y-4" method="post" enctype="multipart/form-data" action="../classes/vehicule_class.php">
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-medium mb-1">Vehicle modele</label>
+                        <input type="text" class="w-full border rounded-lg p-2" id="editmodele" name="editmodele">
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium mb-1">Vehicle marque</label>
+                        <input type="text" class="w-full border rounded-lg p-2" id="editmarque" name="editmarque">
+                    </div>
+                            <input type="hidden" id="editVehicleId" name="vehiculeId">
+                    <div>
+                        <label class="block text-sm font-medium mb-1">Category</label>
+                        <select class="w-full border rounded-lg p-2" id="editCategory" name="editCategory">
+                        <?php 
+                            $arr = $categorie->showCategorie();
+                            foreach($arr as $row){
+                                echo "<option value='". $row['Categorie_id'] . "'>". $row['nom'] ."</option>";
+                            }
+                        ?>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium mb-1">Price per Day</label>
+                        <input type="number" class="w-full border rounded-lg p-2" id="editprice" name="editprice">
+                    </div>
+                <div>
+                    <label class="block text-sm font-medium mb-1">Vehicle Image</label>
+                    <input type="file" class="w-full border rounded-lg p-2" id="editVehicle_Image" name="editVehicle_Image">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium mb-1">Current Vehicle Image</label>
+                    <img id="editVehicleImage" src="" alt="Vehicle Image" style="max-width: 200px; margin-bottom: 10px; border: 1px solid #ccc;">
+                </div>
+                <?php
+                        $rows = $vehicule->showAllVehicule();
+                        foreach($rows as $row){
+                ?>
+                
+                <?php } ?>
+                </div>
+                <div class="flex justify-end space-x-4">
+                    <button type="button" onclick="closeModal('editVehicleModal')" class="px-4 py-2 border rounded-lg">Cancel</button>
+                    <button type="submit" name="editVehicle_submit" class="px-4 py-2 bg-primary rounded-lg">Edit Vehicule</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <!-- Add Category Modal -->
     <div id="addCategoryModal" class="modal">
         <div class="bg-white rounded-lg w-1/3 mx-auto my-auto p-6">
@@ -442,6 +517,60 @@ if($_SESSION['role_id'] == 1){
         function closeModal(modalId) {
             document.getElementById(modalId).classList.remove('active');
         }
+        
+        document.querySelectorAll('.editbtn').forEach(editbtn => {
+            editbtn.addEventListener('click', function(e){
+            
+            e.preventDefault();
+
+            let vehiculeid = this.parentElement.querySelector('.editvehicule_id_input').value;
+
+            openModal('editVehicleModal');
+
+            let conn = new XMLHttpRequest();
+            conn.open('GET', '../classes/getAllVehicules.php?vehicule_id=' + vehiculeid, true);
+            
+            conn.send();
+
+            conn.onload = function(){
+                if(conn.status === 200){
+                    let vehicles = JSON.parse(conn.responseText);
+
+                    vehicles.forEach(vehicle => {
+                        document.getElementById('editmarque').value = vehicle.marque;
+                        document.getElementById('editmodele').value = vehicle.modele;
+                        document.getElementById('editCategory').value = vehicle.Categorie_id;
+                        document.getElementById('editprice').value = vehicle.prix;
+                        document.getElementById('editVehicleImage').src = vehicle.vehicule_image;
+                        document.getElementById('editVehicleId').value = vehicle.vehicule_id;
+                    })
+                }
+            }
+        })
+        })
+
+        document.querySelector('form').addEventListener('submit', function(e) {
+        e.preventDefault();
+
+    let formData = new FormData(this);
+    
+    let xhr = new XMLHttpRequest();
+    xhr.open('POST', '../classes/vehicule_class.php', true);
+    
+    xhr.onload = function() {
+        if (xhr.status === 200) {
+            alert('Vehicle updated successfully!');
+            closeModal('editVehicleModal');
+            location.reload(); 
+        } else {
+            alert('An error occurred.');
+        }
+    };
+
+    xhr.send(formData);
+});
+            
+        
     </script>
 </body>
 </html>
