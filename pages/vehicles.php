@@ -136,12 +136,12 @@ if($_SESSION['role_id'] == 2){
                         </span>
                     </div>
                     </div>
-                    <a href="../pages/reservation_page.php?vehiculeId=<?php echo $_SESSION['vehicule_id']?>"><button class="btn-primary w-full py-2 rounded-lg">Reserve Now</button></a>
+                    <a href="../pages/reservation_page.php?vehiculeId=<?php echo $row['vehicule_id']?>"><button class="btn-primary w-full py-2 rounded-lg">Reserve Now</button></a>
                 </div>
             </div>
             <?php
             }
-        }
+            }
             ?>
         </div>
 

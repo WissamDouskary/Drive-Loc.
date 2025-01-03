@@ -1,8 +1,10 @@
 <?php
 session_start();
 require_once '../classes/vehicule_class.php';
+require_once '../classes/Avis.php';
 
 $vehicule = new Vehicule();
+$avis = new Avis();
 
 if (isset($_SESSION['success'])) {
     $message = $_SESSION['success'];
@@ -13,6 +15,27 @@ if (isset($_SESSION['success'])) {
     $alertType = 'error'; 
     unset($_SESSION['date_invalide']); 
 } else {
+    $message = '';
+    $alertType = '';
+}
+
+if(isset($_POST['submit_review']) && isset($_SESSION['vehicule_id'])){
+    $commentaire = $_POST['commentaire'];
+    $car_id = $_SESSION['vehicule_id'];
+    $user_id = $_SESSION['user_id'];
+
+    $avis->ajouterAvis($commentaire, $user_id, $car_id);
+}
+
+if(isset($_SESSION['commentAdd'])){
+    $message = $_SESSION['commentAdd'];
+    $alertType = 'success'; 
+    unset($_SESSION['commentAdd']);
+}else if(isset($_SESSION['commentdontAdd'])){
+    $message = $_SESSION['commentdontAdd'];
+    $alertType = 'error';
+    unset($_SESSION['commentdontAdd']);
+}else{
     $message = '';
     $alertType = '';
 }
@@ -169,6 +192,9 @@ if($_SESSION['role_id'] == 2){
                     if(isset($_SESSION['date_invalide'])){
                         echo $_SESSION['date_invalide'];
                     }
+                    if(isset($_SESSION['commentAdd'])){
+                        echo $_SESSION['commentAdd'];
+                    }
                     ?>
                     <!-- Reservation Form -->
                     <form class="space-y-4" method="post" action="../classes/client.php?vehicule_Id=<?php echo $_SESSION['vehicule_id'] ?>&clientId=<?php echo $_SESSION['user_id'] ?>">
@@ -199,37 +225,28 @@ if($_SESSION['role_id'] == 2){
             <!-- Add Comment Form -->
             <div class="bg-white rounded-lg shadow-lg p-6 mb-6">
                 <h3 class="text-lg font-semibold mb-4">Add Your Review</h3>
-                <form class="space-y-4">
+                <form class="space-y-4" method="post">
                     <div>
                         <label class="block text-sm font-medium mb-1">Your Review</label>
-                        <textarea class="w-full border rounded-lg p-2" rows="4"></textarea>
+                        <textarea class="w-full border rounded-lg p-2" rows="4" name="commentaire"></textarea>
                     </div>
-                    <button class="bg-primary px-6 py-2 rounded-lg">Submit Review</button>
+                    <button class="bg-primary px-6 py-2 rounded-lg" name="submit_review">Submit Review</button>
                 </form>
             </div>
 
-            <!-- Existing Comments -->
+            <!-- Comments -->
+             <?php
+              
+             ?>
             <div class="space-y-6">
-                <!-- Comment 1 -->
                 <div class="bg-white rounded-lg shadow-lg p-6">
                     <div class="flex justify-between items-start mb-4">
                         <div>
-                            <h4 class="font-semibold">John Doe</h4>
+                            <h4 class="font-semibold"></h4>
                         </div>
-                        <span class="text-gray-500">2 days ago</span>
+                        <span class="text-gray-500"></span>
                     </div>
-                    <p class="text-gray-700">Great car! Very comfortable and fuel-efficient. The GPS was particularly helpful during my trip.</p>
-                </div>
-
-                <!-- Comment 2 -->
-                <div class="bg-white rounded-lg shadow-lg p-6">
-                    <div class="flex justify-between items-start mb-4">
-                        <div>
-                            <h4 class="font-semibold">Jane Smith</h4>
-                        </div>
-                        <span class="text-gray-500">1 week ago</span>
-                    </div>
-                    <p class="text-gray-700">Clean and well-maintained vehicle. The pickup process was smooth and the staff was friendly.</p>
+                    <p class="text-gray-700"></p>
                 </div>
             </div>
         </div>

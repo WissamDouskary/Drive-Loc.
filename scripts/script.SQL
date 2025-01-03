@@ -50,5 +50,7 @@ CREATE TABLE avis (
     commentaire VARCHAR(225),
     date_creation DATE,
     user_id INT NOT NULL,
-    FOREIGN KEY (user_id) REFERENCES user(user_id) ON DELETE CASCADE
+    vehicule_id INT NOT NULL,
+    FOREIGN KEY (user_id) REFERENCES user(user_id) ON DELETE CASCADE,
+    FOREIGN KEY (vehicule_id) REFERENCES vehicule(vehicule_id) ON DELETE CASCADE
 );
