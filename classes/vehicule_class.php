@@ -105,7 +105,9 @@ class Vehicule {
     }
 
     public function searchForVehicules($searchData){
-        $sql = "SELECT * FROM vehicule
+        $sql = "SELECT v.*, c.nom
+                FROM vehicule v
+                LEFT JOIN Categorie c ON v.Categorie_id = c.Categorie_id
                 WHERE marque LIKE :searchdata";
         $stmt = $this->pdo->prepare($sql);
 
@@ -167,11 +169,39 @@ class Vehicule {
         $stmt->bindParam(':Vehicule_id', $Vehicule_id);
 
         if($stmt->execute()){
-            echo "Modele: $modele, Marque: $marque, Prix: $prix, Vehicule_image: $Vehicule_image, Category ID: $Categorie_id, Vehicule ID: $Vehicule_id";
+            header('Location: ../pages/dashboard.php');
+            exit();
         }else{
             echo "lalalalal";
         }
         
+    }
+
+    public function fetchdataforcurrentpage($startIn, $VehiculesParPage) {
+        $sql = "SELECT v.*, c.nom
+                FROM vehicule v
+                LEFT JOIN Categorie c
+                ON v.Categorie_id = c.Categorie_id 
+                LIMIT :startIn, :VehiculesParPage";
+        $stmt = $this->pdo->prepare($sql);
+    
+        $stmt->bindParam(':startIn', $startIn, PDO::PARAM_INT);
+        $stmt->bindParam(':VehiculesParPage', $VehiculesParPage, PDO::PARAM_INT);
+    
+        $stmt->execute();
+    
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public function countPagesForPagination(){
+        $totalRecordsQuery = "SELECT COUNT(*) AS total FROM vehicule";
+        $totalRecordsResult = $this->pdo->prepare($totalRecordsQuery);
+    
+        $totalRecordsResult->execute();
+    
+        $totalRecordsRow = $totalRecordsResult->fetch(PDO::FETCH_ASSOC);
+    
+        return $totalRecordsRow['total'];
     }
     
 }

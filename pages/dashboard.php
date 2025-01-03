@@ -549,7 +549,7 @@ if($_SESSION['role_id'] == 1){
         })
         })
 
-        document.querySelector('form').addEventListener('submit', function(e) {
+        document.querySelector('form')[1].addEventListener('submit', function(e) {
         e.preventDefault();
 
     let formData = new FormData(this);
@@ -562,8 +562,6 @@ if($_SESSION['role_id'] == 1){
             alert('Vehicle updated successfully!');
             closeModal('editVehicleModal');
             location.reload(); 
-        } else {
-            alert('An error occurred.');
         }
     };
 

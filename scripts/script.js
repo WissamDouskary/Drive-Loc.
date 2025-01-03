@@ -67,7 +67,7 @@ document.getElementById('user-menu-button').addEventListener('click', function (
     
         searchInput.addEventListener('input', function() {
         let searchValue = searchInput.value;
-        console.log("Search value:", searchValue);
+        
         let conn = new XMLHttpRequest();
         conn.open("GET", `../classes/search_vehicules.php?carModel=${searchValue}`, true);
         conn.send();
@@ -88,6 +88,7 @@ document.getElementById('user-menu-button').addEventListener('click', function (
         vehiclesContainer.innerHTML = '';
         errorcontain.innerHTML = '';
         vehicles.forEach(vehicle => {
+            console.log(vehicle);
             vehiclesContainer.innerHTML += `
                 <div class="bg-white rounded-lg shadow-lg overflow-hidden card-animation">
                     <img src="${vehicle.vehicule_image}" alt="${vehicle.marque}" class="w-full h-48 object-cover">

@@ -6,6 +6,13 @@ require_once '../classes/Categorie.php';
 $vehiculs = new Vehicule();
 $categorie = new Categorie();
 
+$VehiculesParPage = 6;
+
+$thisPage = isset($_GET['page']) ? $_GET['page'] : 1;
+$startIn = ($thisPage - 1) * $VehiculesParPage; 
+
+$result = $vehiculs->fetchdataforcurrentpage($startIn, $VehiculesParPage);
+
 
 if($_SESSION['role_id'] == 2){
 
@@ -105,12 +112,8 @@ if($_SESSION['role_id'] == 2){
         </div>
         <p id="errorcontain"></p>
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-            
-             <?php
-             $rows = $vehiculs->showAllVehicule();
-             foreach($rows as $row){
-                $_SESSION['vehicule_id'] = $row['vehicule_id'];
-             ?>
+            <?php if (count($result) > 0) { ?>
+             <?php foreach($result as $row) { ?>
             <div class="bg-white rounded-lg shadow-lg overflow-hidden card-animation">
                 <img src="<?php echo $row['vehicule_image'] ?>" alt="Toyota Corolla" class="w-full h-48 object-cover">
                 <div class="p-6">
@@ -138,17 +141,33 @@ if($_SESSION['role_id'] == 2){
             </div>
             <?php
             }
+        }
             ?>
         </div>
 
-        <!-- Pagination -->
-        <div class="flex justify-center space-x-2 mt-8">
-            <button class="px-4 py-2 rounded-lg border hover:bg-gray-100">Previous</button>
-            <button class="px-4 py-2 rounded-lg border bg-primary">1</button>
-            <button class="px-4 py-2 rounded-lg border hover:bg-gray-100">2</button>
-            <button class="px-4 py-2 rounded-lg border hover:bg-gray-100">3</button>
-            <button class="px-4 py-2 rounded-lg border hover:bg-gray-100">Next</button>
-        </div>
+        <?php
+        $totalRecordsRow = $vehiculs->countPagesForPagination();
+        $totalPages = ceil($totalRecordsRow / $VehiculesParPage);
+
+        echo "<div class='flex justify-center space-x-2 mt-8'>";
+        if ($thisPage > 1) {
+            echo "<a href='?page=" . ($thisPage - 1) . "'><button class='px-4 py-2 rounded-lg border hover:bg-gray-100'>Previous</button></a>";
+        }
+
+        for ($page = 1; $page <= $totalPages; $page++) {
+            if ($page == $thisPage) {
+                echo "<button class='px-4 py-2 rounded-lg border bg-primary'>$page</button>";
+            } else {
+                echo "<a href='?page=$page'><button class='px-4 py-2 rounded-lg border hover:bg-gray-100'>$page</button></a>";
+            }
+        }
+
+        if ($thisPage < $totalPages) {
+            echo "<a href='?page=" . ($thisPage + 1) . "'><button class='px-4 py-2 rounded-lg border hover:bg-gray-100'>Next</button></a>";
+                }
+        echo "</div>";
+        ?>
+
     </main>
 
     <footer class="bg-gray-800 text-white py-8 mt-12">
