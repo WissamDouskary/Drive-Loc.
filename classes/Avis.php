@@ -31,7 +31,18 @@ class Avis {
     }
 
     function showAvis($vehicule_id){
-        
+        $sql = "SELECT u.nom, u.prenom, a.commentaire, a.date_creation
+                FROM user u 
+                LEFT JOIN avis a
+                ON a.user_id = u.user_id
+                WHERE a.vehicule_id = :vehicule_id";
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->bindParam(":vehicule_id", $vehicule_id);
+
+        $stmt->execute();
+
+        return $stmt->fetchAll(pdo::FETCH_ASSOC);
+
     }
 
     function modifierAvis(){

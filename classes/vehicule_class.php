@@ -54,8 +54,15 @@ class Vehicule {
         }
     }
 
-    function verifierDisponibilite(){
-        
+    function verifierDisponibilite($vehicule_id){
+        $checkDisposql = "UPDATE vehicule
+                          SET status = 'Reserved'
+                          WHERE status = 'Active' AND vehicule_id = :vehicule_id";
+        $checkdispoStmt = $this->pdo->prepare($checkDisposql);
+        $checkdispoStmt->bindParam(":vehicule_id", $vehicule_id);
+
+        $checkdispoStmt->execute();
+
     }
 
     function showAllVehicule(){
@@ -86,11 +93,14 @@ class Vehicule {
                 FROM vehicule v
                 LEFT JOIN Categorie c
                 ON v.Categorie_id = c.Categorie_id
-                WHERE vehicule_id = $selectedvehiculeID";
+                WHERE vehicule_id = :selectedvehiculeID";
         $stmt = $this->pdo->prepare($sql);
-        if($stmt->execute()){
-            return $stmt->fetchAll(PDO::FETCH_ASSOC);
-        }
+
+        $stmt->bindParam(':selectedvehiculeID', $selectedvehiculeID);
+
+        $stmt->execute();
+
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
     public function getVehiculesByCategorie($categoryId) {

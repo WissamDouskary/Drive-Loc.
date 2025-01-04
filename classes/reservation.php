@@ -48,6 +48,25 @@ class reservation {
        return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
+    function reservationPriceCalule($date_debut, $date_fin) {
+        
+        $sql = "SELECT DATEDIFF(:date_fin, :date_debut) AS days_difference,
+                       prix,
+                       (DATEDIFF(:date_fin, :date_debut) * prix) AS total_price
+                FROM vehicule";
+    
+        $stmt = $this->pdo->prepare($sql);
+    
+        $stmt->bindParam(":date_debut", $date_debut);
+        $stmt->bindParam(":date_fin", $date_fin);
+    
+        $stmt->execute();
+    
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+    
+        return $result['total_price'];
+    }
+
 }
 
 ?>

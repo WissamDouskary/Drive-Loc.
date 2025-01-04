@@ -1,10 +1,11 @@
 <?php
-session_start();
 require_once '../classes/vehicule_class.php';
 require_once '../classes/Avis.php';
+require_once '../classes/client.php';
 
 $vehicule = new Vehicule();
 $avis = new Avis();
+
 
 if (isset($_SESSION['success'])) {
     $message = $_SESSION['success'];
@@ -18,6 +19,7 @@ if (isset($_SESSION['success'])) {
     $message = '';
     $alertType = '';
 }
+
 
 if(isset($_POST['submit_review']) && isset($_SESSION['vehicule_id'])){
     $commentaire = $_POST['commentaire'];
@@ -157,10 +159,17 @@ if($_SESSION['role_id'] == 2){
 
                     <!-- Availability Status -->
                     <div class="mb-6">
+                        <?php if($row['status'] == 'active'){ ?>
                         <span class="inline-flex items-center px-4 py-2 rounded-full text-sm font-semibold bg-green-100 text-green-800">
                             <span class="w-2 h-2 bg-green-500 rounded-full mr-2"></span>
                             <?php echo $row['status'] ?>
                         </span>
+                        <?php }else if($row['status'] == 'Reserved'){ ?>
+                            <span class="inline-flex items-center px-4 py-2 rounded-full text-sm font-semibold bg-yellow-100 text-yellow-800">
+                            <span class="w-2 h-2 bg-yellow-500 rounded-full mr-2"></span>
+                            <?php echo $row['status'] ?>
+                        </span>
+                        <?php } ?>
                         <span class="inline-flex items-center px-4 py-2 rounded-full text-sm font-semibold bg-red-100 text-red-800">
                             <span class="w-2 h-2 bg-red-500 rounded-full mr-2"></span>
                             <?php echo $row['nom'] ?>
@@ -188,16 +197,9 @@ if($_SESSION['role_id'] == 2){
                             </ul>
                         </div>
                     </div>
-                    <?php 
-                    if(isset($_SESSION['date_invalide'])){
-                        echo $_SESSION['date_invalide'];
-                    }
-                    if(isset($_SESSION['commentAdd'])){
-                        echo $_SESSION['commentAdd'];
-                    }
-                    ?>
+                    <?php if($row['status'] == 'active'){  ?>
                     <!-- Reservation Form -->
-                    <form class="space-y-4" method="post" action="../classes/client.php?vehicule_Id=<?php echo $_SESSION['vehicule_id'] ?>&clientId=<?php echo $_SESSION['user_id'] ?>">
+                    <form class="space-y-4" method="post" action="reservation_page.php?vehicule_Id=<?php echo $_SESSION['vehicule_id'] ?>&clientId=<?php echo $_SESSION['user_id'] ?>">
                         <div class="grid grid-cols-2 gap-4">
                             <div>
                                 <label class="block text-sm font-medium mb-1">Pick-up Date</label>
@@ -210,6 +212,9 @@ if($_SESSION['role_id'] == 2){
                         </div>
                         <input name="reservation_submit" type="submit" class="cursor-pointer btn-primary w-full py-3 rounded-lg text-lg font-semibold mt-6" value="Reserve Now">
                     </form>
+                    <?php }else{  ?>
+                    <h2 class="text-xl">You can't reserve this car, please return another time !</h2>
+                    <?php }  ?>
                 </div>
                 <?php
                 } 
@@ -217,6 +222,8 @@ if($_SESSION['role_id'] == 2){
                  ?>
             </div>
         </div>
+
+
 
         <!-- Comments Section -->
         <div class="mt-12">
@@ -236,19 +243,21 @@ if($_SESSION['role_id'] == 2){
 
             <!-- Comments -->
              <?php
-              
+            $reviews = $avis->showAvis($_SESSION['vehicule_id']);
+            foreach($reviews as $rev){
              ?>
             <div class="space-y-6">
-                <div class="bg-white rounded-lg shadow-lg p-6">
+                <div class="bg-white rounded-lg shadow-lg p-6 mb-6">
                     <div class="flex justify-between items-start mb-4">
                         <div>
-                            <h4 class="font-semibold"></h4>
+                            <h4 class="font-semibold"><?php echo $rev['nom'] . " " . $rev['prenom'] ?></h4>
                         </div>
-                        <span class="text-gray-500"></span>
+                        <span class="text-gray-500"><?php echo $rev['date_creation'] ?></span>
                     </div>
-                    <p class="text-gray-700"></p>
+                    <p class="text-gray-700"><?php echo $rev['commentaire'] ?></p>
                 </div>
             </div>
+            <?php } ?>
         </div>
     </main>
 

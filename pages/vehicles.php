@@ -126,17 +126,26 @@ if($_SESSION['role_id'] == 2){
                     </div>
                     <div class="flex gap-6">
                         <div class="mb-6">
+                        <?php if($row['status'] == 'active'){  ?>
                         <span class="inline-flex items-center px-4 py-2 rounded-full text-sm font-semibold bg-green-100 text-green-800">
                             <span class="w-2 h-2 bg-green-500 rounded-full mr-2"></span>
                             <?php echo $row['status'] ?>
                         </span>
+                        <?php }else if($row['status'] == 'Reserved'){?>
+                        <span class="inline-flex items-center px-4 py-2 rounded-full text-sm font-semibold bg-yellow-100 text-yellow-800">
+                            <span class="w-2 h-2 bg-yellow-500 rounded-full mr-2"></span>
+                            <?php echo $row['status'] ?>
+                        </span>
+                        <?php }  ?>
                         <span class="inline-flex items-center px-4 py-2 rounded-full text-sm font-semibold bg-red-100 text-red-800">
                             <span class="w-2 h-2 bg-red-500 rounded-full mr-2"></span>
                             <?php echo $row['nom'] ?>
                         </span>
                     </div>
                     </div>
+                    
                     <a href="../pages/reservation_page.php?vehiculeId=<?php echo $row['vehicule_id']?>"><button class="btn-primary w-full py-2 rounded-lg">Reserve Now</button></a>
+                    
                 </div>
             </div>
             <?php

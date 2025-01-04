@@ -1,8 +1,10 @@
 <?php 
 session_start();
 
+require_once('../classes/reservation.php');
+
 if($_SESSION['role_id'] == 2){
-    require_once('../classes/reservation.php');
+    
 
     $reservation = new reservation();
 ?>
@@ -111,7 +113,9 @@ if($_SESSION['role_id'] == 2){
                         <tbody class="bg-white divide-y divide-gray-200">
                             <?php
                             $rows = $reservation->showClientReservations();
+                            
                             foreach($rows as $row){
+                                $reservationPrice = $reservation->reservationPriceCalule($row['date_debut'], $row['date_fin']);
                                 $status_accepte = $row['status'] === 'accepte' ? 'text-green-600' : 'text-gray-500';
                                 $status_refuse = $row['status'] === 'refuse' ? 'text-red-600' : 'text-gray-500';
                             ?>
@@ -133,7 +137,7 @@ if($_SESSION['role_id'] == 2){
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap">
                                         <div class="text-sm text-gray-900">
-                                            <?php echo number_format($row['prix'], 2); ?> $
+                                            <?php echo $reservationPrice; ?> $
                                         </div>
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap">

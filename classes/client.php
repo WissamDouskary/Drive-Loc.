@@ -3,6 +3,7 @@ session_start();
 
 require_once '../classes/user.php';
 require_once '../classes/conn.php';
+require_once '../classes/vehicule_class.php';
 
 class client extends User{
     private $pdo;
@@ -33,12 +34,14 @@ class client extends User{
         $stmt->bindParam(":user_id", $client_id);
         $stmt->bindParam(":vehicule_id", $vehicule_id);
 
-        if($stmt->execute()){
-            $_SESSION['success'] = "Reservation completed, wait for admin approval!";
-            header('Location: ../pages/reservation_page.php?vehiculeId=' . $vehicule_id);
-            exit();
-        }
+
+        $stmt->execute();
+            
+
+        
+    
     }
+
     function cancelReservation($reservation_id){
         $sql = "UPDATE reservation
                 SET status = 'refuse'
@@ -66,22 +69,27 @@ class client extends User{
 
 }
 
+
 if (isset($_POST['reservation_submit']) && isset($_GET['vehicule_Id']) && isset($_GET['clientId'])) {
     
     $date_debut = $_POST['date_debut'];
     $date_fin = $_POST['date_fin'];
     $vehiculeId = $_GET['vehicule_Id'];
     $clientId = $_GET['clientId'];
-
+    
     $client = new client();
-
+    $vehicule = new Vehicule();
+    
     if ($date_debut >= date("Y-m-d") && $date_fin > $date_debut) {
         $client->ReserverVehicule($date_debut, $date_fin, $clientId, $vehiculeId);
+        $vehicule->verifierDisponibilite($vehiculeId);
+        $_SESSION['success'] = "Reservation completed, wait for admin approval!";
     } else {
         $_SESSION['date_invalide'] = "Please enter a valid date!";
-        header('Location: ../pages/reservation_page.php?vehiculeId=' . $vehiculeId);
-        exit();
     }
+
+    header('Location: ../pages/reservation_page.php?vehiculeId=' . $vehiculeId);
+    exit();
 }
 
 if(isset($_POST['action']) && isset($_POST['reservation_id'])){
