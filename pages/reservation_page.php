@@ -1,25 +1,13 @@
 <?php
+if(session_status() == PHP_SESSION_NONE){
+    session_start();
+}
 require_once '../classes/vehicule_class.php';
 require_once '../classes/Avis.php';
 require_once '../classes/client.php';
 
 $vehicule = new Vehicule();
 $avis = new Avis();
-
-
-if (isset($_SESSION['success'])) {
-    $message = $_SESSION['success'];
-    $alertType = 'success';
-    unset($_SESSION['success']); 
-} elseif (isset($_SESSION['date_invalide'])) {
-    $message = $_SESSION['date_invalide'];
-    $alertType = 'error'; 
-    unset($_SESSION['date_invalide']); 
-} else {
-    $message = '';
-    $alertType = '';
-}
-
 
 if(isset($_POST['submit_review']) && isset($_SESSION['vehicule_id'])){
     $commentaire = $_POST['commentaire'];
@@ -37,12 +25,26 @@ if(isset($_SESSION['commentAdd'])){
     $message = $_SESSION['commentdontAdd'];
     $alertType = 'error';
     unset($_SESSION['commentdontAdd']);
-}else{
+}else if(isset($_SESSION['success'])) {
+    $message = $_SESSION['success'];
+    $alertType = 'success';
+    unset($_SESSION['success']); 
+}else if(isset($_SESSION['date_invalide'])){
+    $message = $_SESSION['date_invalide'];
+    $alertType = 'error'; 
+    unset($_SESSION['date_invalide']); 
+} else {
     $message = '';
     $alertType = '';
 }
 
+
+
+
+
 if($_SESSION['role_id'] == 2){
+
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -68,6 +70,15 @@ if($_SESSION['role_id'] == 2){
 <body class="bg-gray-50">
         
         <?php if ($message != ''){ ?>
+        <div class="fixed top-0 left-1/2 transform -translate-x-1/2 z-50 w-80 mt-4 px-4 py-3 rounded-lg text-center 
+            <?php echo $alertType == 'success' ? 'bg-green-500 text-white' : 'bg-red-500 text-white'; ?>" 
+            x-data="{ show: true }" x-show="show" x-transition:enter="transition ease-out duration-300" x-transition:leave="transition ease-in duration-200" x-init="setTimeout(() => show = false, 5000)">
+            <span><?php echo $message; ?></span>
+            <button @click="show = false" class="absolute top-1 right-1 text-xl font-bold">&times;</button>
+        </div>
+    <?php } ?>
+
+            <?php if ($message != ''){ ?>
         <div class="fixed top-0 left-1/2 transform -translate-x-1/2 z-50 w-80 mt-4 px-4 py-3 rounded-lg text-center 
             <?php echo $alertType == 'success' ? 'bg-green-500 text-white' : 'bg-red-500 text-white'; ?>" 
             x-data="{ show: true }" x-show="show" x-transition:enter="transition ease-out duration-300" x-transition:leave="transition ease-in duration-200" x-init="setTimeout(() => show = false, 5000)">
@@ -252,7 +263,16 @@ if($_SESSION['role_id'] == 2){
                         <div>
                             <h4 class="font-semibold"><?php echo $rev['nom'] . " " . $rev['prenom'] ?></h4>
                         </div>
+                        <div class="flex justify-end gap-6">
                         <span class="text-gray-500"><?php echo $rev['date_creation'] ?></span>
+                        <?php if($_SESSION['user_id'] == $rev['user_id']){ ?>
+                        <form method="post" action="../classes/Avis.php">
+                            <input type="hidden" name="DeleteAvisID" id="DeleteAvisID" value="<?php echo $rev['avis_id']; ?>">
+                            <input type="image" name="AvisSubmitDel" src="../imgs/delete_24dp_E8EAED_FILL0_wght400_GRAD0_opsz24 (1).svg" alt="submit" class="bg-red-500 rounded-full">
+                        </form>
+                        <?php } ?>
+                        </div>
+
                     </div>
                     <p class="text-gray-700"><?php echo $rev['commentaire'] ?></p>
                 </div>

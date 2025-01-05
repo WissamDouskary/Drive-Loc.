@@ -1,5 +1,7 @@
 <?php
-session_start();
+if(session_status() == PHP_SESSION_NONE){
+    session_start();
+}
 
 require_once '../classes/user.php';
 require_once '../classes/conn.php';
@@ -37,9 +39,6 @@ class client extends User{
 
         $stmt->execute();
             
-
-        
-    
     }
 
     function cancelReservation($reservation_id){
@@ -83,6 +82,7 @@ if (isset($_POST['reservation_submit']) && isset($_GET['vehicule_Id']) && isset(
     if ($date_debut >= date("Y-m-d") && $date_fin > $date_debut) {
         $client->ReserverVehicule($date_debut, $date_fin, $clientId, $vehiculeId);
         $vehicule->verifierDisponibilite($vehiculeId);
+        
         $_SESSION['success'] = "Reservation completed, wait for admin approval!";
     } else {
         $_SESSION['date_invalide'] = "Please enter a valid date!";

@@ -51,6 +51,7 @@ CREATE TABLE avis (
     date_creation DATE,
     user_id INT NOT NULL,
     vehicule_id INT NOT NULL,
+    status ENUM('active', 'archived');
     FOREIGN KEY (user_id) REFERENCES user(user_id) ON DELETE CASCADE,
     FOREIGN KEY (vehicule_id) REFERENCES vehicule(vehicule_id) ON DELETE CASCADE
 );

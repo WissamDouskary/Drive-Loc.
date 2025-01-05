@@ -35,7 +35,7 @@ class reservation {
     public function showClientReservations(){
        $user_id = $_SESSION['user_id'];
 
-       $sql = "SELECT r.*, v.modele, v.marque, v.prix
+       $sql = "SELECT r.*, v.modele, v.marque, v.prix, v.vehicule_id 
               FROM reservation r 
               JOIN vehicule v ON r.vehicule_id = v.vehicule_id 
               WHERE r.user_id = ? ";
@@ -48,17 +48,19 @@ class reservation {
        return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    function reservationPriceCalule($date_debut, $date_fin) {
+    function reservationPriceCalule($date_debut, $date_fin, $car_id) {
         
         $sql = "SELECT DATEDIFF(:date_fin, :date_debut) AS days_difference,
                        prix,
                        (DATEDIFF(:date_fin, :date_debut) * prix) AS total_price
-                FROM vehicule";
+                FROM vehicule
+                WHERE vehicule_id = :carid";
     
         $stmt = $this->pdo->prepare($sql);
     
         $stmt->bindParam(":date_debut", $date_debut);
         $stmt->bindParam(":date_fin", $date_fin);
+        $stmt->bindParam(":carid", $car_id);
     
         $stmt->execute();
     

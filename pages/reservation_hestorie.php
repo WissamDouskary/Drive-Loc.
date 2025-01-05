@@ -115,7 +115,7 @@ if($_SESSION['role_id'] == 2){
                             $rows = $reservation->showClientReservations();
                             
                             foreach($rows as $row){
-                                $reservationPrice = $reservation->reservationPriceCalule($row['date_debut'], $row['date_fin']);
+                                $reservationPrice = $reservation->reservationPriceCalule($row['date_debut'], $row['date_fin'], $row['vehicule_id']);
                                 $status_accepte = $row['status'] === 'accepte' ? 'text-green-600' : 'text-gray-500';
                                 $status_refuse = $row['status'] === 'refuse' ? 'text-red-600' : 'text-gray-500';
                             ?>
