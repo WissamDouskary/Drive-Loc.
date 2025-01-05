@@ -55,3 +55,26 @@ CREATE TABLE avis (
     FOREIGN KEY (user_id) REFERENCES user(user_id) ON DELETE CASCADE,
     FOREIGN KEY (vehicule_id) REFERENCES vehicule(vehicule_id) ON DELETE CASCADE
 );
+
+CREATE VIEW showAllVehicule AS
+SELECT v.*, c.nom
+FROM vehicule v
+LEFT JOIN Categorie c
+ON v.Categorie_id = c.Categorie_id;
+
+DELIMITER $$
+
+CREATE PROCEDURE ReserverVehicule(
+    IN p_date_debut DATE, 
+    IN p_date_fin DATE, 
+    IN p_client_id INT, 
+    IN p_vehicule_id INT
+)
+BEGIN
+
+    INSERT INTO reservation (date_debut, date_fin, status, user_id, vehicule_id)
+    VALUES (p_date_debut, p_date_fin, 'waiting', p_client_id, p_vehicule_id);
+    
+END $$
+
+DELIMITER ;

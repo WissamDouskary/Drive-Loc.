@@ -10,7 +10,7 @@ class Categorie {
         $connection = new DBconnection();
         $this->pdo = $connection->PDOconnect();
     }
-    // ajouter une categorie methode
+    
     function ajouterCategorie($cat_name, $cat_desc){
         $this->cat_nom = $cat_name;
         $this->cat_description = $cat_desc;
@@ -27,11 +27,7 @@ class Categorie {
             exit();
         }
     }
-    // modifier categorie methode
-    function modifierCategorie(){
-
-    }
-    // supprimer categorie methode
+    
     function supprCategorie(){
 
     }
