@@ -15,25 +15,12 @@ class client extends User{
         $this->pdo = $connection->PDOconnect();
     }
 
-    function affichierLesVehicules(){
-
-    }
-
-    function rechercherVehucules(){
-
-    }
-    
-    function filtrerVehicules(){
-        
-    }
-
     function ReserverVehicule($date_debut, $date_fin, $client_id, $vehicule_id){
-        $sql = "INSERT INTO reservation (date_debut, date_fin, status, user_id, vehicule_id)
-                VALUES (:date_debut, :date_fin, 'waiting', :user_id, :vehicule_id)";
+        $sql = "CALL ReserverVehicule(:date_debut, :date_fin, :client_id, :vehicule_id)";
         $stmt = $this->pdo->prepare($sql);
         $stmt->bindParam(":date_debut", $date_debut);
         $stmt->bindParam(":date_fin", $date_fin);
-        $stmt->bindParam(":user_id", $client_id);
+        $stmt->bindParam(":client_id", $client_id);
         $stmt->bindParam(":vehicule_id", $vehicule_id);
 
 
@@ -51,10 +38,6 @@ class client extends User{
             header('Location: ../pages/reservation_hestorie.php');
             exit();
         }
-    }
-
-    function gererAvis(){
-
     }
 
     function ShowAllClients(){
