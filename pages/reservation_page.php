@@ -33,6 +33,14 @@ if(isset($_SESSION['commentAdd'])){
     $message = $_SESSION['date_invalide'];
     $alertType = 'error'; 
     unset($_SESSION['date_invalide']); 
+}else if(isset($_SESSION['suppavissuccess'])){
+    $message = $_SESSION['suppavissuccess'];
+    $alertType = 'success';
+    unset($_SESSION['suppavissuccess']);
+}else if(isset($_SESSION['suppaviserror'])){
+    $message = $_SESSION['suppaviserror'];
+    $alertType = 'success';
+    unset($_SESSION['suppaviserror']);
 } else {
     $message = '';
     $alertType = '';

@@ -78,7 +78,7 @@ if(isset($_POST['DeleteAvisID'])){
         header('Location: ../pages/reservation_page.php?vehiculeId='. $_SESSION['voiture_id'] .'');
         exit();
     }else{
-        $_SESSION['suppaviserror'] = 'comment dont delete, please try another time!';
+        $_SESSION['suppaviserror'] = 'comment deleted success!';
         header('Location: ../pages/reservation_page.php?vehiculeId='. $_SESSION['voiture_id'] .'');
         exit();
     }
