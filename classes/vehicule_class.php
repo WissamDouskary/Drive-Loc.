@@ -66,22 +66,8 @@ class Vehicule {
     }
 
     function showAllVehicule(){
-        $sql = "SELECT v.*, c.nom
-                FROM vehicule v
-                LEFT JOIN Categorie c
-                ON v.Categorie_id = c.Categorie_id";
-        $stmt = $this->pdo->prepare($sql);
-        if($stmt->execute()){
-            return $stmt->fetchAll(PDO::FETCH_ASSOC);
-        }
-    }
-
-    function showTop3Vehicule(){
-        $sql = "SELECT v.*, c.nom
-                FROM vehicule v
-                LEFT JOIN Categorie c
-                ON v.Categorie_id = c.Categorie_id
-                LIMIT 3";
+        $sql = "SELECT * FROM showAllVehicule";
+        
         $stmt = $this->pdo->prepare($sql);
         if($stmt->execute()){
             return $stmt->fetchAll(PDO::FETCH_ASSOC);
